@@ -5,22 +5,27 @@ import Defaults._
 import net.liftweb.json._
 import net.liftweb.json.Serialization._
 import model.Game
+import rest.GameServerClient
 
 object Main {
 
 	implicit val formats = DefaultFormats
 
 	def main(args: Array[String]) {
-		println("Hallo")
 
-		val request = host("rest-game-server.herokuapp.com") / "games" GET
-		val result = Http(request OK as.String)
+		println("get")
+		GameServerClient.getAvaiableGames map println
 
-		val json = parse(result())
-		val games = json.extract[List[Game]]
+		println("create")
+		val game = GameServerClient.newGame(4, 1)
+		println(game)
 
-		games map println
+		println("update")
+		GameServerClient.updateGame(game.copy(currentPlayers = 2))
+		GameServerClient.getAvaiableGames map println
 
-		println(write(games))
+		println("delete")
+		GameServerClient.deleteGame(game);
+		GameServerClient.getAvaiableGames map println
 	}
 }
