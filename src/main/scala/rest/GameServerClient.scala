@@ -39,13 +39,13 @@ object GameServerClient {
 		val json = write(game)
 
 		val request = jsonRequest(gameServer / "games" / game.id PUT, json)
-		handleRequest(request, result => println(result))
+		handleRequest(request, result => ())
 	}
 
 	def deleteGame(game: Game) {
 		val request = gameServer / "games" / game.id DELETE
 
-		handleRequest(request, result => println(result))
+		handleRequest(request, result => ())
 	}
 
 	private def jsonRequest(request: RequestBuilder, json: String): RequestBuilder =
