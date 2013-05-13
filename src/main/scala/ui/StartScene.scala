@@ -10,6 +10,9 @@ import scalafx.scene.control.Label
 import scalafx.scene.control.TextField
 import scalafx.scene.control.Button
 import scalafx.geometry.Pos
+import javafx.event.EventHandler
+import javafx.event.ActionEvent
+import javafx.event.Event
 
 class StartScene extends Scene {
 
@@ -20,7 +23,7 @@ class StartScene extends Scene {
 
 			content = List(
 				new Text {
-					text = "Mensch Ärgere Dich Nicht"
+					text = "Mensch ärgere dich nicht"
 					id = "h1"
 					effect = new Reflection
 					fill = new LinearGradient(
@@ -59,7 +62,6 @@ class StartScene extends Scene {
 								text = "Name"
 							},
 							new TextField {
-
 							}
 						)
 					},
@@ -70,7 +72,9 @@ class StartScene extends Scene {
 						content = List(
 							new Button {
 								text = "Spiel erstellen"
-
+								onAction = (event: ActionEvent) => {
+									Main.loadSceen(new GameCreationScene)
+								}
 							},
 							new Button {
 								text = "Spiel beitreten"
@@ -81,5 +85,12 @@ class StartScene extends Scene {
 			}
 
 	}
+
+	implicit def actionDsl[T <: Event](f: T => Unit): EventHandler[T] =
+		new EventHandler[T] {
+			def handle(event: T) {
+				f(event)
+			}
+		}
 
 }
