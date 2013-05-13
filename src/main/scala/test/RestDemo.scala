@@ -4,10 +4,10 @@ import dispatch._
 import Defaults._
 import net.liftweb.json._
 import net.liftweb.json.Serialization._
-import model.Game
+import rest.Game
 import rest.GameServerClient
 
-object Main {
+object RestDemo {
 
 	implicit val formats = DefaultFormats
 

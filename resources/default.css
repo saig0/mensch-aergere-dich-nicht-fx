@@ -1,0 +1,9 @@
+.scene {
+	-fx-fill: white;
+	-fx-font-family: "sanserif";
+}
+
+#header {
+	-fx-font-size: 80pt;
+}
+

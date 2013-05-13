@@ -4,7 +4,7 @@ import dispatch._
 import Defaults._
 import net.liftweb.json._
 import net.liftweb.json.Serialization._
-import model.Game
+import rest.Game
 import com.ning.http.client.RequestBuilder
 
 object GameServerClient extends HttpRequestHandler {
