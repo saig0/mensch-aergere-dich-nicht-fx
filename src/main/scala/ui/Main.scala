@@ -21,38 +21,13 @@ object Main extends JFXApp {
 
 	stage = new JFXApp.PrimaryStage {
 		title = "Mensch-Ärgere-Dich-Nicht-FX"
+	}
 
-		scene = new Scene {
-			stylesheets += loadCss
+	loadSceen(new StartScene)
 
-			content = new HBox {
-				padding = Insets(20)
-
-				content = List(
-					new Text {
-						text = "Mensch Ärgere Dich Nicht"
-						id = "header"
-						effect = new Reflection
-						fill = new LinearGradient(
-							endX = 0,
-							stops = List(Stop(0, Color.ORANGE), Stop(1, Color.CHOCOLATE)))
-					},
-					new Text {
-						text = " FX"
-						id = "header"
-						fill = new LinearGradient(
-							endX = 0,
-							stops = List(Stop(0, Color.CYAN), Stop(1, Color.DODGERBLUE)))
-						effect = new Reflection {
-							effect = new DropShadow {
-								color = Color.DODGERBLUE
-								radius = 25
-								spread = 0.25
-							}
-						}
-					})
-			}
-		}
+	def loadSceen(scene: Scene) = {
+		scene.stylesheets += loadCss
+		stage.scene = scene
 	}
 
 	private lazy val loadCss =
