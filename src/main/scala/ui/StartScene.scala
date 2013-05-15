@@ -14,83 +14,43 @@ import javafx.event.EventHandler
 import javafx.event.ActionEvent
 import javafx.event.Event
 
-class StartScene extends Scene {
+class StartScene extends AbstractScene {
 
-	content = new BorderPane {
+	lazy val nameField = new TextField {
+		text = "Spieler 1"
+	}
 
-		top = new HBox {
-			padding = Insets(20)
+	def contentCenter = List(
+		new HBox {
+			alignment = Pos.CENTER
+			spacing = 20
 
 			content = List(
-				new Text {
-					text = "Mensch ärgere dich nicht"
-					id = "h1"
-					effect = new Reflection
-					fill = new LinearGradient(
-						endX = 0,
-						stops = List(Stop(0, Color.ORANGE), Stop(1, Color.CHOCOLATE)))
+				new Label {
+					text = "Name"
 				},
-				new Text {
-					text = " FX"
-					id = "h1"
-					fill = new LinearGradient(
-						endX = 0,
-						stops = List(Stop(0, Color.CYAN), Stop(1, Color.DODGERBLUE)))
-					effect = new Reflection {
-						effect = new DropShadow {
-							color = Color.DODGERBLUE
-							radius = 25
-							spread = 0.25
-						}
+				nameField
+			)
+		},
+		new HBox {
+			alignment = Pos.CENTER
+			spacing = 20
+
+			content = List(
+				new Button {
+					text = "Spiel erstellen"
+					onAction = (event: ActionEvent) => {
+						val scene = new GameCreationScene(nameField.text.value)
+						Main.loadSceen(scene)
 					}
+				},
+				new Button {
+					text = "Spiel beitreten"
 				}
 			)
 		}
+	)
 
-		center =
-			new VBox {
-				spacing = 25
-				padding = Insets(50)
-
-				content = List(
-					new HBox {
-						alignment = Pos.CENTER
-						spacing = 20
-
-						content = List(
-							new Label {
-								text = "Name"
-							},
-							new TextField {
-							}
-						)
-					},
-					new HBox {
-						alignment = Pos.CENTER
-						spacing = 20
-
-						content = List(
-							new Button {
-								text = "Spiel erstellen"
-								onAction = (event: ActionEvent) => {
-									Main.loadSceen(new GameCreationScene)
-								}
-							},
-							new Button {
-								text = "Spiel beitreten"
-							}
-						)
-					}
-				)
-			}
-
-	}
-
-	implicit def actionDsl[T <: Event](f: T => Unit): EventHandler[T] =
-		new EventHandler[T] {
-			def handle(event: T) {
-				f(event)
-			}
-		}
+	def onShow {}
 
 }

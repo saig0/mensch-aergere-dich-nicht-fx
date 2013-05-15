@@ -4,8 +4,8 @@ import dispatch._
 import Defaults._
 import net.liftweb.json._
 import net.liftweb.json.Serialization._
-import rest.Game
 import com.ning.http.client.RequestBuilder
+import model.Game
 
 object GameServerClient extends HttpRequestHandler {
 
@@ -13,7 +13,7 @@ object GameServerClient extends HttpRequestHandler {
 
 	private def gameServer = host("rest-game-server.herokuapp.com")
 
-	def getAvaiableGames: List[Game] = {
+	def getAvaiableGames: Future[List[Game]] = {
 		val request = gameServer / "games" GET
 
 		handleRequest(request, { result =>
@@ -22,7 +22,7 @@ object GameServerClient extends HttpRequestHandler {
 		})
 	}
 
-	def newGame(maxPlayers: Int, currentPlayers: Int): Game = {
+	def newGame(maxPlayers: Int, currentPlayers: Int): Future[Game] = {
 		val game = Game(0, "ip", maxPlayers, currentPlayers)
 		val json = write(game)
 

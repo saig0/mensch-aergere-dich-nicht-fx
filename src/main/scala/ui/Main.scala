@@ -25,9 +25,10 @@ object Main extends JFXApp {
 
 	loadSceen(new StartScene)
 
-	def loadSceen(scene: Scene) = {
+	def loadSceen[S <: AbstractScene](scene: S) = {
 		scene.stylesheets += loadCss
 		stage.scene = scene
+		scene.onShow
 	}
 
 	private lazy val loadCss =

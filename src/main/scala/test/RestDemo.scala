@@ -4,7 +4,7 @@ import dispatch._
 import Defaults._
 import net.liftweb.json._
 import net.liftweb.json.Serialization._
-import rest.Game
+import model.Game
 import rest.GameServerClient
 
 object RestDemo {
@@ -14,10 +14,10 @@ object RestDemo {
 	def main(args: Array[String]) {
 
 		println("get")
-		GameServerClient.getAvaiableGames map println
+		GameServerClient.getAvaiableGames() map println
 
 		println("create")
-		val game = GameServerClient.newGame(4, 1)
+		val game = GameServerClient.newGame(4, 1)()
 		println(game)
 
 		println("update")
