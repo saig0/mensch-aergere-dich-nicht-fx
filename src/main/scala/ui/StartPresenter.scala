@@ -4,14 +4,20 @@ import model.Player
 
 class StartPresenter extends Presenter[StartView] {
 
-	val view = new StartView(StartPresenter.this)
+	lazy val view = new StartView(StartPresenter.this)
+
+	val events = List(StartEvent)
 
 	def createGame {
-		val presenter = new GameCreationPresenter
-		Main.loadPresenter(presenter)
 		val player = Player(view.playerName)
-		presenter.show(player)
+		publish(GoToGameCreation(player))
 	}
 
 	def joinGame {}
+
+	def receive = {
+		case StartEvent => {
+			createView
+		}
+	}
 }

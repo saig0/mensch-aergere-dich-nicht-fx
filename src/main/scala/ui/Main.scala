@@ -16,17 +16,22 @@ import scalafx.scene.effect.Reflection
 import scalafx.scene.paint.Color.sfxColor2jfx
 import scalafx.scene.paint.Stop.sfxStop2jfx
 import scalafx.scene.layout.VBox
+import akka.actor.ActorSystem
+import akka.actor.Props
+import scalafx.application.Platform
+import model.Player
+
+case class StartEvent
+
+case class GoToGameCreation(player: Player)
+
+case class JoinPlayer(player: Player)
 
 object Main extends JFXApp {
 
 	stage = new JFXApp.PrimaryStage {
 		title = "Mensch-Ärgere-Dich-Nicht-FX"
 	}
-
-	loadPresenter(new StartPresenter)
-
-	def loadPresenter(presenter: Presenter[_]) =
-		presenter.createView
 
 	def loadSceen[S <: AbstractScene](scene: S) = {
 		scene.stylesheets += loadCss
@@ -35,4 +40,20 @@ object Main extends JFXApp {
 
 	private lazy val loadCss =
 		getClass().getResource("/default.css").toExternalForm()
+
+	val system = ActorSystem.create("EventBus")
+
+	def publish(event: Object) {
+		system.eventStream.publish(event)
+	}
+
+	def loadPresenter[P <: Presenter[_]](presenter: Class[P]) {
+		system.actorOf(Props(presenter))
+	}
+
+	loadPresenter(classOf[StartPresenter])
+	loadPresenter(classOf[GameCreationPresenter])
+
+	Thread.sleep(1000)
+	publish(StartEvent)
 }
