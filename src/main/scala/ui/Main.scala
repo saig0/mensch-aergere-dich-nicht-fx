@@ -23,6 +23,10 @@ import model.Player
 
 case class StartEvent
 
+case class EndEvent
+
+case class GoToStart
+
 case class GoToGameCreation(player: Player)
 
 case class JoinPlayer(player: Player)
@@ -31,14 +35,17 @@ object Main extends JFXApp {
 
 	stage = new JFXApp.PrimaryStage {
 		title = "Mensch-Ärgere-Dich-Nicht-FX"
+		width = 1200
+		height = 800
+
+		centerOnScreen
+
+		onCloseRequest = publish(EndEvent)
 	}
 
 	def loadSceen[S <: AbstractScene](scene: S) = {
 		scene.stylesheets += loadCss
 		stage.scene = scene
-		stage.width = 1200
-		stage.height = 800
-		stage.centerOnScreen
 	}
 
 	private lazy val loadCss =

@@ -19,6 +19,7 @@ import Defaults._
 import scalafx.scene.control.TableView
 import model.Player
 import scalafx.scene.control.TableColumn
+import javafx.event.ActionEvent
 
 class GameCreationView(presenter: GameCreationPresenter) extends AbstractScene {
 
@@ -61,6 +62,8 @@ class GameCreationView(presenter: GameCreationPresenter) extends AbstractScene {
 
 	def showGame(game: Game) {
 		this.game = game
+		data = Nil
+
 		c.content = List(
 			new HBox {
 				spacing = 50
@@ -72,7 +75,11 @@ class GameCreationView(presenter: GameCreationPresenter) extends AbstractScene {
 								text = "IP: " + game.address
 							},
 							playersLabel,
-							startGameButton
+							startGameButton,
+							new Button {
+								text = "abbrechen"
+								onAction = (event: ActionEvent) => presenter.abort
+							}
 						)
 					},
 					table

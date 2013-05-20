@@ -6,7 +6,7 @@ class StartPresenter extends Presenter[StartView] {
 
 	lazy val view = new StartView(StartPresenter.this)
 
-	val events = List(StartEvent)
+	val events = List(StartEvent, GoToStart)
 
 	def createGame {
 		val player = Player(view.playerName)
@@ -17,6 +17,9 @@ class StartPresenter extends Presenter[StartView] {
 
 	def receive = {
 		case StartEvent => {
+			createView
+		}
+		case GoToStart => {
 			createView
 		}
 	}

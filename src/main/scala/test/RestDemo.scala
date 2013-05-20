@@ -12,7 +12,6 @@ object RestDemo {
 	implicit val formats = DefaultFormats
 
 	def main(args: Array[String]) {
-
 		println("get")
 		GameServerClient.getAvaiableGames() map println
 
@@ -27,5 +26,13 @@ object RestDemo {
 		println("delete")
 		GameServerClient.deleteGame(game);
 		GameServerClient.getAvaiableGames map println
+	}
+
+	def removeGames {
+		GameServerClient.getAvaiableGames() map { game =>
+			println("remove " + game)
+			GameServerClient.deleteGame(game)
+			Thread.sleep(1000)
+		}
 	}
 }
