@@ -20,19 +20,21 @@ import scalafx.scene.control.TableView
 import model.Player
 import scalafx.scene.control.TableColumn
 
-class GameCreationScene(player: String) extends AbstractScene {
+class GameCreationView(presenter: GameCreationPresenter) extends AbstractScene {
 
-	lazy val c = new HBox {
+	private lazy val c = new HBox {
 		alignment = Pos.CENTER
 		spacing = 20
 	}
 
-	lazy val table = new TableView[Player] {
+	private lazy val table = new TableView[Player] {
 		columns += new TableColumn[Player, String] {
 			text = "Spieler"
 			cellValueFactory = { _.value.name }
 		}
 	}
+
+	private var data = List[Player]()
 
 	def contentCenter = {
 		c.content = List(
@@ -46,34 +48,35 @@ class GameCreationScene(player: String) extends AbstractScene {
 		List(c)
 	}
 
-	def onShow {
-		updateUi(GameServerClient.newGame(4, 1), { (game: Game) =>
-			c.content = List(
-				new HBox {
-					spacing = 50
-					content = List(
-						new VBox {
-							spacing = 20
-							content = List(
-								new Label {
-									text = "IP: " + game.address
-								},
-								new Label {
-									text = "Spieler: " + game.currentPlayers + " / " + game.maxPlayers
-								},
-								new Button {
-									text = "Spiel starten"
-									disable = game.currentPlayers < game.maxPlayers
-								}
-							)
-						},
-						table
-					)
-				}
-			)
-			table.setItems(List(Player(player)))
-		}
+	def showGame(game: Game) {
+		c.content = List(
+			new HBox {
+				spacing = 50
+				content = List(
+					new VBox {
+						spacing = 20
+						content = List(
+							new Label {
+								text = "IP: " + game.address
+							},
+							new Label {
+								text = "Spieler: " + game.currentPlayers + " / " + game.maxPlayers
+							},
+							new Button {
+								text = "Spiel starten"
+								disable = game.currentPlayers < game.maxPlayers
+							}
+						)
+					},
+					table
+				)
+			}
 		)
+	}
+
+	def joinPlayer(player: Player) {
+		data ::= player
+		table.setItems(data)
 	}
 
 }

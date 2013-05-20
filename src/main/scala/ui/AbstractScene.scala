@@ -24,6 +24,7 @@ import javafx.collections.ObservableList
 import javafx.collections.FXCollections
 import java.util.LinkedList
 import scalafx.scene.control.TableColumn
+import scalafx.beans.property.ObjectProperty
 
 abstract class AbstractScene extends Scene {
 
@@ -70,8 +71,6 @@ abstract class AbstractScene extends Scene {
 
 	def contentCenter: List[Node]
 
-	def onShow: Unit
-
 	def updateUi[T](future: Future[T], onSuccess: T => Unit, onFailure: Throwable => Unit = (t => t.printStackTrace)) {
 		future onComplete {
 			case Success(result) => Platform.runLater(onSuccess(result))
@@ -94,5 +93,7 @@ abstract class AbstractScene extends Scene {
 
 	implicit def tableColumn2jfx[M, R](column: TableColumn[M, R]) =
 		TableColumn.sfxTableColumn2jfx(column)
+
+	implicit def x[T](x: T): ObjectProperty[T] = ObjectProperty(this, "", x)
 
 }

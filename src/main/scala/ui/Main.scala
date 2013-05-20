@@ -23,12 +23,14 @@ object Main extends JFXApp {
 		title = "Mensch-Ärgere-Dich-Nicht-FX"
 	}
 
-	loadSceen(new StartScene)
+	loadPresenter(new StartPresenter)
+
+	def loadPresenter(presenter: Presenter[_]) =
+		presenter.createView
 
 	def loadSceen[S <: AbstractScene](scene: S) = {
 		scene.stylesheets += loadCss
 		stage.scene = scene
-		scene.onShow
 	}
 
 	private lazy val loadCss =

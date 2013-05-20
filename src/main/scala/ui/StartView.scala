@@ -14,9 +14,9 @@ import javafx.event.EventHandler
 import javafx.event.ActionEvent
 import javafx.event.Event
 
-class StartScene extends AbstractScene {
+class StartView(presenter: StartPresenter) extends AbstractScene {
 
-	lazy val nameField = new TextField {
+	private lazy val nameField = new TextField {
 		text = "Spieler 1"
 	}
 
@@ -39,18 +39,15 @@ class StartScene extends AbstractScene {
 			content = List(
 				new Button {
 					text = "Spiel erstellen"
-					onAction = (event: ActionEvent) => {
-						val scene = new GameCreationScene(nameField.text.value)
-						Main.loadSceen(scene)
-					}
+					onAction = (event: ActionEvent) => presenter.createGame
 				},
 				new Button {
 					text = "Spiel beitreten"
+					onAction = (event: ActionEvent) => presenter.joinGame
 				}
 			)
 		}
 	)
 
-	def onShow {}
-
+	def playerName: String = nameField.text.value
 }
