@@ -34,7 +34,18 @@ class GameCreationView(presenter: GameCreationPresenter) extends AbstractScene {
 		}
 	}
 
+	private lazy val playersLabel = new Label {
+		text = "Spieler: " + 0 + " / " + 0
+	}
+
+	private lazy val startGameButton = new Button {
+		text = "Spiel starten"
+		disable = true
+	}
+
 	private var data = List[Player]()
+
+	private var game: Game = _
 
 	def contentCenter = {
 		c.content = List(
@@ -49,6 +60,7 @@ class GameCreationView(presenter: GameCreationPresenter) extends AbstractScene {
 	}
 
 	def showGame(game: Game) {
+		this.game = game
 		c.content = List(
 			new HBox {
 				spacing = 50
@@ -59,13 +71,8 @@ class GameCreationView(presenter: GameCreationPresenter) extends AbstractScene {
 							new Label {
 								text = "IP: " + game.address
 							},
-							new Label {
-								text = "Spieler: " + game.currentPlayers + " / " + game.maxPlayers
-							},
-							new Button {
-								text = "Spiel starten"
-								disable = game.currentPlayers < game.maxPlayers
-							}
+							playersLabel,
+							startGameButton
 						)
 					},
 					table
@@ -77,6 +84,9 @@ class GameCreationView(presenter: GameCreationPresenter) extends AbstractScene {
 	def joinPlayer(player: Player) {
 		data ::= player
 		table.setItems(data)
+
+		playersLabel.text = "Spieler: " + data.size + " / " + game.maxPlayers
+		startGameButton.disable = data.size < game.maxPlayers
 	}
 
 }

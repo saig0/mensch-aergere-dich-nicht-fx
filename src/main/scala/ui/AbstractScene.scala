@@ -32,7 +32,7 @@ abstract class AbstractScene extends Scene {
 
 		top = new HBox {
 			padding = Insets(20)
-
+			alignment = Pos.CENTER
 			content = List(
 				new Text {
 					text = "Mensch ärgere dich nicht"
@@ -63,6 +63,7 @@ abstract class AbstractScene extends Scene {
 			new VBox {
 				spacing = 25
 				padding = Insets(50)
+				alignment = Pos.CENTER
 
 				content = contentCenter
 			}
