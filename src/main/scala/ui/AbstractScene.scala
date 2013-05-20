@@ -71,13 +71,6 @@ abstract class AbstractScene extends Scene {
 
 	def contentCenter: List[Node]
 
-	def updateUi[T](future: Future[T], onSuccess: T => Unit, onFailure: Throwable => Unit = (t => t.printStackTrace)) {
-		future onComplete {
-			case Success(result) => Platform.runLater(onSuccess(result))
-			case Failure(failure) => Platform.runLater(onFailure(failure))
-		}
-	}
-
 	implicit def actionDsl[T <: Event](f: T => Unit): EventHandler[T] =
 		new EventHandler[T] {
 			def handle(event: T) {
@@ -94,6 +87,6 @@ abstract class AbstractScene extends Scene {
 	implicit def tableColumn2jfx[M, R](column: TableColumn[M, R]) =
 		TableColumn.sfxTableColumn2jfx(column)
 
-	implicit def x[T](x: T): ObjectProperty[T] = ObjectProperty(this, "", x)
+	implicit def propertyToObservable[T](x: T): ObjectProperty[T] = ObjectProperty(this, "", x)
 
 }
