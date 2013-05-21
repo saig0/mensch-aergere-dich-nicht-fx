@@ -8,12 +8,15 @@ class StartPresenter extends Presenter[StartView] {
 
 	val events = List(StartEvent, GoToStart)
 
+	def player = Player(view.playerName)
+
 	def createGame {
-		val player = Player(view.playerName)
 		publish(GoToGameCreation(player))
 	}
 
-	def joinGame {}
+	def joinGame {
+		publish(GoToJoinGame(player))
+	}
 
 	def receive = {
 		case StartEvent => {

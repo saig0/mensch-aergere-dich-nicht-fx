@@ -29,6 +29,8 @@ case class GoToStart
 
 case class GoToGameCreation(player: Player)
 
+case class GoToJoinGame(player: Player)
+
 case class JoinPlayer(player: Player)
 
 object Main extends JFXApp {
@@ -40,7 +42,9 @@ object Main extends JFXApp {
 
 		centerOnScreen
 
-		onCloseRequest = publish(EndEvent)
+		onCloseRequest = {
+			publish(EndEvent)
+		}
 	}
 
 	def loadSceen[S <: AbstractScene](scene: S) = {
@@ -63,6 +67,7 @@ object Main extends JFXApp {
 
 	loadPresenter(classOf[StartPresenter])
 	loadPresenter(classOf[GameCreationPresenter])
+	loadPresenter(classOf[JoinGamePresenter])
 
 	Thread.sleep(1000)
 	publish(StartEvent)
