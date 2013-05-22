@@ -4,6 +4,8 @@ import rest.GameServerClient
 import model.Game
 import model.Player
 import model.Player
+import communication.ClientServer
+import akka.actor.ActorRef
 
 class GameCreationPresenter extends Presenter[GameCreationView] {
 
@@ -13,6 +15,8 @@ class GameCreationPresenter extends Presenter[GameCreationView] {
 
 	var game: Option[Game] = None
 
+	var clientServer: ActorRef = _
+
 	def receive = {
 		case GoToGameCreation(player) => {
 			createView
@@ -21,6 +25,8 @@ class GameCreationPresenter extends Presenter[GameCreationView] {
 				view.showGame(game)
 				view.joinPlayer(player)
 			})
+			clientServer = ClientServer.create
+			clientServer ! "Server is up!"
 		}
 		case JoinPlayer(player) => {
 			view.joinPlayer(player)

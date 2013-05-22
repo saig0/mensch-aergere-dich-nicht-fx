@@ -14,5 +14,6 @@ libraryDependencies ++= Seq(
   // "net.databinder.dispatch" % "dispatch-core_2.9.2" % "0.9.5"
   "net.databinder.dispatch" %% "dispatch-core" % "0.10.0",
   "org.scalafx" % "scalafx_2.10" % "1.0.0-M3",
-  "com.typesafe.akka" %% "akka-actor" % "2.1.2"
+  "com.typesafe.akka" %% "akka-actor" % "2.1.2",
+  "com.typesafe.akka" %% "akka-remote" % "2.1.2"
  )
