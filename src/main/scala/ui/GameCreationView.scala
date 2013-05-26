@@ -77,6 +77,10 @@ class GameCreationView(presenter: GameCreationPresenter) extends AbstractScene {
 							playersLabel,
 							startGameButton,
 							new Button {
+								text = "CPU hinzufügen"
+								onAction = (event: ActionEvent) => presenter.newCpuPlayer
+							},
+							new Button {
 								text = "abbrechen"
 								onAction = (event: ActionEvent) => presenter.abort
 							}
@@ -89,7 +93,7 @@ class GameCreationView(presenter: GameCreationPresenter) extends AbstractScene {
 	}
 
 	def joinPlayer(player: Player) {
-		data ::= player
+		data ++= player :: Nil
 		table.setItems(data)
 
 		playersLabel.text = "Spieler: " + data.size + " / " + game.maxPlayers

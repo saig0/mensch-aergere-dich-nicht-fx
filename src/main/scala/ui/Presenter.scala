@@ -28,6 +28,10 @@ trait Presenter[V <: AbstractScene] extends Actor {
 		}
 	}
 
+	def updateUi(f: => Unit) {
+		Platform.runLater(f)
+	}
+
 	def subscripe(presenter: Presenter[_], events: List[Any]) {
 		events map { event =>
 			Main.system.eventStream.subscribe(presenter.self, event.getClass)

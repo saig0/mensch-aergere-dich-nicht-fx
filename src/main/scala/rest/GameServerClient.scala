@@ -6,6 +6,7 @@ import net.liftweb.json._
 import net.liftweb.json.Serialization._
 import com.ning.http.client.RequestBuilder
 import model.Game
+import scala.concurrent.future
 
 object GameServerClient extends HttpRequestHandler {
 
@@ -33,14 +34,14 @@ object GameServerClient extends HttpRequestHandler {
 		})
 	}
 
-	def updateGame(game: Game) {
+	def updateGame(game: Game): Future[Unit] = future {
 		val json = write(game)
 
 		val request = jsonRequest(gameServer / "games" / game.id PUT, json)
 		handleRequest(request, result => ())
 	}
 
-	def deleteGame(game: Game) {
+	def deleteGame(game: Game): Future[Unit] = future {
 		val request = gameServer / "games" / game.id DELETE
 
 		handleRequest(request, result => ())
