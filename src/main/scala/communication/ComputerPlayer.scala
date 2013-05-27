@@ -14,17 +14,23 @@ object ComputerPlayer {
 
 	var cpuPlayer = 0
 
-	def create = {
+	def create(server: ActorRef) = {
 		cpuPlayer += 1
-		val actor = Main.system.actorOf(Props[ComputerPlayer], "cpuPlayer_" + cpuPlayer)
-		Main.publish(JoinPlayer(Player("CPU" + cpuPlayer)))
+		val actor = Main.system.actorOf(Props(new ComputerPlayer(server)), "cpuPlayer_" + cpuPlayer)
+		val player = Player("CPU" + cpuPlayer)
+		server ! ConnectedPlayer(player, actor)
 		actor
 	}
 }
 
-class ComputerPlayer extends Actor with ActorLogging {
+class ComputerPlayer(server: ActorRef) extends Actor with ActorLogging {
 
 	def receive = {
+		case DisconnectPlayer => {
+			println("disconnect cpu")
+			ComputerPlayer.cpuPlayer -= 1
+			Main.system.stop(self)
+		}
 		case x => println("receive on cpu " + x)
 	}
 }

@@ -56,14 +56,6 @@ class JoinGameView(presenter: JoinGamePresenter) extends AbstractScene {
 				joinButton.disable = true
 			}
 		}
-
-		selectionModel.onChange((observable, oldValue, newValue) => {
-			if (newValue.getSelectedItems.size > 0) {
-				joinButton.disable = false
-			} else {
-				joinButton.disable = true
-			}
-		})
 	}
 
 	def selectedGame = table.getSelectionModel.getSelectedItem

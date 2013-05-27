@@ -8,6 +8,7 @@ import communication.ClientServer
 import akka.actor.ActorRef
 import communication.ComputerPlayer
 import model.Player
+import communication.DisconnectPlayer
 
 class GameCreationPresenter extends Presenter[GameCreationView] {
 
@@ -19,8 +20,11 @@ class GameCreationPresenter extends Presenter[GameCreationView] {
 
 	var clientServer: ActorRef = _
 
+	var player: Player = _
+
 	def receive = {
 		case GoToGameCreation(player) => {
+			this.player = player
 			createView
 			updateUi(GameServerClient.newGame(4, 1), { (game: Game) =>
 				this.game = Some(game)
@@ -42,7 +46,18 @@ class GameCreationPresenter extends Presenter[GameCreationView] {
 	}
 
 	def newCpuPlayer {
-		ComputerPlayer.create
+		ComputerPlayer.create(clientServer)
+	}
+
+	def removePlayer {
+		val player = view.selectedPlayer
+		if (player != this.player) {
+			clientServer ! DisconnectPlayer(player)
+			game = game map (g => g.copy(currentPlayers = g.currentPlayers - 1))
+			updateUi(GameServerClient.updateGame(game.get), { _: Unit =>
+				view.removePlayer(player)
+			})
+		}
 	}
 
 	def abort {
