@@ -51,6 +51,7 @@ class GameCreationView(presenter: GameCreationPresenter) extends AbstractScene {
 	private lazy val startGameButton = new Button {
 		text = "Spiel starten"
 		disable = true
+		onAction = (event: ActionEvent) => presenter.startGame
 	}
 
 	private lazy val addCpuPlayerButton = new Button {

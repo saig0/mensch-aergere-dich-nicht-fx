@@ -9,12 +9,17 @@ import akka.actor.ActorRef
 import communication.ComputerPlayer
 import model.Player
 import communication.DisconnectPlayer
+import communication.StartGame
+import communication.ConnectedPlayer
+import communication.StartGame
+import model.Player
+import communication.StartGame
 
 class GameCreationPresenter extends Presenter[GameCreationView] {
 
 	lazy val view = new GameCreationView(this)
 
-	val events = List(GoToGameCreation(Player("")), EndEvent, JoinPlayer(Player("")))
+	val events = List(GoToGameCreation(Player("")), EndEvent, JoinPlayer(Player("")), StartGame(List[Player]()))
 
 	var game: Option[Game] = None
 
@@ -26,13 +31,14 @@ class GameCreationPresenter extends Presenter[GameCreationView] {
 		case GoToGameCreation(player) => {
 			this.player = player
 			createView
-			updateUi(GameServerClient.newGame(4, 1), { (game: Game) =>
+			updateUi(GameServerClient.newGame(4, 0), { (game: Game) =>
 				this.game = Some(game)
 				view.showGame(game)
-				view.joinPlayer(player)
+
+				clientServer = ClientServer.create
+				clientServer ! "Server is up!"
+				clientServer ! ConnectedPlayer(player, self)
 			})
-			clientServer = ClientServer.create
-			clientServer ! "Server is up!"
 		}
 		case JoinPlayer(player) => {
 			game = game map (g => g.copy(currentPlayers = g.currentPlayers + 1))
@@ -43,6 +49,9 @@ class GameCreationPresenter extends Presenter[GameCreationView] {
 		case EndEvent => {
 			game map (GameServerClient.deleteGame(_))
 		}
+		case StartGame(players) => {
+			println("start game" + players)
+		}
 	}
 
 	def newCpuPlayer {
@@ -52,11 +61,18 @@ class GameCreationPresenter extends Presenter[GameCreationView] {
 	def removePlayer {
 		val player = view.selectedPlayer
 		if (player != this.player) {
-			clientServer ! DisconnectPlayer(player)
+			clientServer
 			game = game map (g => g.copy(currentPlayers = g.currentPlayers - 1))
 			updateUi(GameServerClient.updateGame(game.get), { _: Unit =>
 				view.removePlayer(player)
 			})
+		}
+	}
+
+	def startGame {
+		val game = this.game.get
+		if (game.currentPlayers == game.maxPlayers) {
+			clientServer ! StartGame
 		}
 	}
 

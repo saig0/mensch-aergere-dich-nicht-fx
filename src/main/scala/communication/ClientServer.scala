@@ -14,6 +14,8 @@ case class ConnectedPlayer(player: Player, actor: ActorRef)
 
 case class DisconnectPlayer(player: Player)
 
+case class StartGame(players: List[Player])
+
 object ClientServer {
 
 	def create = {
@@ -38,6 +40,14 @@ class ClientServer extends Actor with ActorLogging {
 			connectedPlayers(player) ! DisconnectPlayer
 			connectedPlayers -= player
 		}
+		case StartGame => {
+			val players = connectedPlayers.keys.toList
+			connectedPlayers map {
+				case (player, actor) =>
+					actor ! StartGame(players)
+			}
+		}
 		case x => println("receive on server " + x)
 	}
+
 }

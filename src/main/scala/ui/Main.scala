@@ -31,6 +31,8 @@ case class GoToGameCreation(player: Player)
 
 case class GoToJoinGame(player: Player)
 
+case class GoToGame(players: List[Player])
+
 case class JoinPlayer(player: Player)
 
 object Main extends JFXApp {
