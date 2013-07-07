@@ -1,0 +1,13 @@
+.root {
+	-fx-font-size: 18pt;
+	-fx-font-family: "sanserif";
+}
+
+.scene {
+	-fx-fill: white;	
+}
+
+#h1 {
+	-fx-font-size: 80pt;
+}
+

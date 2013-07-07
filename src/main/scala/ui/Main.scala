@@ -37,6 +37,8 @@ case class JoinPlayer(player: Player)
 
 object Main extends JFXApp {
 
+	val system = ActorSystem.create("EventBus")
+
 	stage = new JFXApp.PrimaryStage {
 		title = "Mensch-Ärgere-Dich-Nicht-FX"
 		width = 1200
@@ -46,6 +48,7 @@ object Main extends JFXApp {
 
 		onCloseRequest = {
 			publish(EndEvent)
+			system.shutdown
 		}
 	}
 
@@ -56,8 +59,6 @@ object Main extends JFXApp {
 
 	private lazy val loadCss =
 		getClass().getResource("/default.css").toExternalForm()
-
-	val system = ActorSystem.create("EventBus")
 
 	def publish(event: Object) {
 		system.eventStream.publish(event)
@@ -70,6 +71,7 @@ object Main extends JFXApp {
 	loadPresenter(classOf[StartPresenter])
 	loadPresenter(classOf[GameCreationPresenter])
 	loadPresenter(classOf[JoinGamePresenter])
+	loadPresenter(classOf[GamePresenter])
 
 	Thread.sleep(1000)
 	publish(StartEvent)

@@ -17,3 +17,12 @@ libraryDependencies ++= Seq(
   "com.typesafe.akka" %% "akka-actor" % "2.1.2",
   "com.typesafe.akka" %% "akka-remote" % "2.1.2"
  )
+ 
+jfxSettings
+
+JFX.mainClass := Some("ui.Main")
+
+JFX.devKit := JFX.jdk("C:/Program Files/Java/jdk1.7.0_21")
+
+JFX.addJfxrtToClasspath := true
+ 
