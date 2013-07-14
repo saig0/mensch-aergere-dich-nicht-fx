@@ -27,9 +27,7 @@ class JoinGamePresenter extends Presenter[JoinGameView] {
 		case GoToJoinGame(player) => {
 			this.player = player
 			createView
-			updateUi(GameServerClient.getAvaiableGames, { games: List[Game] =>
-				view.showGames(games)
-			})
+			loadGames
 		}
 		case StartGame(players) => {
 			updateUi(
@@ -41,14 +39,15 @@ class JoinGamePresenter extends Presenter[JoinGameView] {
 	def joinGame {
 		val game = view.selectedGame
 		println("join " + game)
-		clientServer = Client.create(game.address)
-		clientServer ! "Client is up!"
-		clientServer ! ConnectedPlayer(player, self)
+		updateUi("Verbinde zum Server " + game.address, {
+			clientServer = Client.create(game.address)
+			clientServer ! "Client is up!"
+			clientServer ! ConnectedPlayer(player, self)
+		})
 	}
 
 	def loadGames {
-		view.showLoading
-		updateUi(GameServerClient.getAvaiableGames, { games: List[Game] =>
+		updateUi("Lade Spiele vom Server", GameServerClient.getAvaiableGames, { games: List[Game] =>
 			view.showGames(games)
 		})
 	}

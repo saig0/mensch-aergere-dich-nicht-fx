@@ -13,6 +13,7 @@ import ui.GoToConnectIp
 import ui.Main
 import ui.GoToGame
 import ui.GoToStart
+import scala.concurrent.future
 
 class ConnectGamePresenter extends Presenter[ConnectGameView] {
 
@@ -40,9 +41,11 @@ class ConnectGamePresenter extends Presenter[ConnectGameView] {
 	def joinGame {
 		val ip = view.ip
 		println("conntect to " + ip)
-		clientServer = Client.create(ip)
-		clientServer ! ClientMessage("Client is up!")
-		clientServer ! ClientMessage(ConnectedPlayer(player, self))
+		updateUi("Verbinde zum Server " + ip, {
+			clientServer = Client.create(ip)
+			clientServer ! ClientMessage("Client is up!")
+			clientServer ! ClientMessage(ConnectedPlayer(player, self))
+		})
 	}
 
 	def abort {

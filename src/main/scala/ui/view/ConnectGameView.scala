@@ -23,7 +23,7 @@ class ConnectGameView(presenter: ConnectGamePresenter) extends AbstractScene {
 
 	def ip: String = ipField.text.value
 
-	def contentCenter = List(
+	show {
 		new HBox {
 			alignment = Pos.CENTER
 			spacing = 20
@@ -39,5 +39,5 @@ class ConnectGameView(presenter: ConnectGamePresenter) extends AbstractScene {
 				}
 			)
 		}
-	)
+	}
 }

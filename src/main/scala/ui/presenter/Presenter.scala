@@ -1,6 +1,7 @@
 package ui.presenter
 
 import scala.concurrent.Future
+import scala.concurrent.future
 import scala.util.Success
 import scala.util.Failure
 import scalafx.application.Platform
@@ -24,9 +25,19 @@ trait Presenter[V <: AbstractScene] extends Actor {
 
 	def updateUi[T](future: Future[T], onSuccess: T => Unit, onFailure: Throwable => Unit = (t => t.printStackTrace)) {
 		future onComplete {
-			case Success(result) => Platform.runLater(onSuccess(result))
-			case Failure(failure) => Platform.runLater(onFailure(failure))
+			case Success(result) => updateUi(onSuccess(result))
+			case Failure(failure) => updateUi(onFailure(failure))
 		}
+	}
+
+	def updateUi[T](loadingText: String, future: Future[T], onSuccess: T => Unit, onFailure: Throwable => Unit = (t => t.printStackTrace)) {
+		updateUi(view.showLoading(loadingText))
+		updateUi(future, onSuccess, onFailure)
+	}
+
+	def updateUi(loadingText: String, f: => Unit) {
+		view.showLoading(loadingText)
+		future(updateUi(f))
 	}
 
 	def updateUi(f: => Unit) {

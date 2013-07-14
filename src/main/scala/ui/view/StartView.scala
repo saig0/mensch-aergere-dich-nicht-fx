@@ -15,7 +15,7 @@ class StartView(presenter: StartPresenter) extends AbstractScene {
 		text = "Spieler 1"
 	}
 
-	def contentCenter = List(
+	show(List(
 		new HBox {
 			alignment = Pos.CENTER
 			spacing = 20
@@ -46,7 +46,7 @@ class StartView(presenter: StartPresenter) extends AbstractScene {
 				}
 			)
 		}
-	)
+	))
 
 	def playerName: String = nameField.text.value
 }

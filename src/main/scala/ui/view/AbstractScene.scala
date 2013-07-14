@@ -18,6 +18,8 @@ import java.util.LinkedList
 import scalafx.scene.control.TableColumn
 import scalafx.beans.property.ObjectProperty
 import scalafx.scene.paint.Stop.sfxStop2jfx
+import scalafx.scene.control.Label
+import scalafx.scene.control.ProgressIndicator
 
 abstract class AbstractScene extends Scene with ScalaFxView {
 
@@ -25,17 +27,31 @@ abstract class AbstractScene extends Scene with ScalaFxView {
 
 		top = new TitleView
 
-		center =
-			new VBox {
-				spacing = 25
-				padding = Insets(50)
-				alignment = Pos.CENTER
-
-				content = contentCenter
-			}
-
+		center = contentCenter
 	}
 
-	def contentCenter: List[Node]
+	private lazy val contentCenter = new VBox {
+		spacing = 25
+		padding = Insets(50)
+		alignment = Pos.CENTER
+	}
 
+	def show(node: Node) {
+		contentCenter.content = node
+	}
+
+	def show(nodes: List[Node]) {
+		contentCenter.content = nodes
+	}
+
+	def showLoading(loadingText: String) {
+		show(List(
+			new Label {
+				text = loadingText
+			},
+			new ProgressIndicator {
+				progress = -1
+			})
+		)
+	}
 }

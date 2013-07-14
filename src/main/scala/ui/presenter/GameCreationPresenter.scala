@@ -39,7 +39,7 @@ class GameCreationPresenter extends Presenter[GameCreationView] {
 		case GoToGameCreation(player) => {
 			this.player = player
 			createView
-			updateUi(GameServerClient.newGame(4, 0), { (game: Game) =>
+			updateUi("Erstelle Spiel auf Server", GameServerClient.newGame(4, 0), { (game: Game) =>
 				this.game = Some(game)
 				view.showGame(game)
 
@@ -59,7 +59,7 @@ class GameCreationPresenter extends Presenter[GameCreationView] {
 			game map (GameServerClient.deleteGame(_))
 		}
 		case StartGame(players) => {
-			updateUi(GameServerClient.deleteGame(game.get), { _: Unit =>
+			updateUi("Entferne Spiel vom Server", GameServerClient.deleteGame(game.get), { _: Unit =>
 				Main.publish(GoToGame(players))
 			})
 		}

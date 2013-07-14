@@ -18,11 +18,6 @@ import scalafx.scene.control.TableColumn
 
 class JoinGameView(presenter: JoinGamePresenter) extends AbstractScene {
 
-	private lazy val c = new HBox {
-		alignment = Pos.CENTER
-		spacing = 20
-	}
-
 	private lazy val joinButton = new Button {
 		text = "Spiel beitreten"
 		disable = true
@@ -56,26 +51,12 @@ class JoinGameView(presenter: JoinGamePresenter) extends AbstractScene {
 
 	private var data = List[Game]()
 
-	def contentCenter = {
-		c.content = List(
-			new Label {
-				text = "Lade Spiele vom Game-Server"
-			},
-			new ProgressIndicator {
-				progress = -1
-			}
-		)
-		List(c)
-	}
-
-	def showLoading = contentCenter
-
 	def showGames(games: List[Game]) {
 		data = games
 		table.setItems(data)
 		joinButton.disable = true
 
-		c.content = List(
+		show {
 			new HBox {
 				spacing = 50
 				content = List(
@@ -96,6 +77,6 @@ class JoinGameView(presenter: JoinGamePresenter) extends AbstractScene {
 					table
 				)
 			}
-		)
+		}
 	}
 }

@@ -19,11 +19,6 @@ import model.Game
 
 class GameCreationView(presenter: GameCreationPresenter) extends AbstractScene {
 
-	private lazy val c = new HBox {
-		alignment = Pos.CENTER
-		spacing = 20
-	}
-
 	private lazy val table: TableView[Player] = new TableView[Player] {
 		columns += new TableColumn[Player, String] {
 			text = "Spieler"
@@ -65,46 +60,31 @@ class GameCreationView(presenter: GameCreationPresenter) extends AbstractScene {
 
 	private var game: Game = _
 
-	def contentCenter = {
-		c.content = List(
-			new Label {
-				text = "Erstelle Spiel auf Game-Server"
-			},
-			new ProgressIndicator {
-				progress = -1
-			}
-		)
-		List(c)
-	}
-
 	def showGame(game: Game) {
 		this.game = game
 		data = Nil
 
-		c.content = List(
-			new HBox {
-				spacing = 50
-				content = List(
-					new VBox {
-						spacing = 20
-						content = List(
-							new Label {
-								text = "IP: " + game.address
-							},
-							playersLabel,
-							startGameButton,
-							addCpuPlayerButton,
-							removePlayerButton,
-							new Button {
-								text = "abbrechen"
-								onAction = (event: ActionEvent) => presenter.abort
-							}
-						)
-					},
-					table
-				)
-			}
-		)
+		show {
+			List(
+				new VBox {
+					spacing = 20
+					content = List(
+						new Label {
+							text = "IP: " + game.address
+						},
+						playersLabel,
+						startGameButton,
+						addCpuPlayerButton,
+						removePlayerButton,
+						new Button {
+							text = "abbrechen"
+							onAction = (event: ActionEvent) => presenter.abort
+						}
+					)
+				},
+				table
+			)
+		}
 	}
 
 	def joinPlayer(player: Player) {
@@ -123,6 +103,7 @@ class GameCreationView(presenter: GameCreationPresenter) extends AbstractScene {
 		playersLabel.text = "Spieler: " + data.size + " / " + game.maxPlayers
 		startGameButton.disable = data.size < game.maxPlayers
 		addCpuPlayerButton.disable = data.size >= game.maxPlayers
+
 	}
 
 	def selectedPlayer = table.getSelectionModel.getSelectedItem
