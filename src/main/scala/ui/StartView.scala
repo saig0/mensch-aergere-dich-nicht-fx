@@ -44,6 +44,10 @@ class StartView(presenter: StartPresenter) extends AbstractScene {
 				new Button {
 					text = "Spiel beitreten"
 					onAction = (event: ActionEvent) => presenter.joinGame
+				},
+				new Button {
+					text = "Direkt mit IP verbinden"
+					onAction = (event: ActionEvent) => presenter.connectIp
 				}
 			)
 		}

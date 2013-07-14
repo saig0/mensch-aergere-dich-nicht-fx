@@ -33,8 +33,9 @@ class ClientServer extends Actor with ActorLogging {
 
 	def receive = {
 		case ConnectedPlayer(player, actor) => {
-			connectedPlayers += (player -> actor)
+			connectedPlayers += (player -> sender)
 			Main.publish(JoinPlayer(player))
+			sender ! "Ok"
 		}
 		case DisconnectPlayer(player) => {
 			connectedPlayers(player) ! DisconnectPlayer
@@ -43,8 +44,10 @@ class ClientServer extends Actor with ActorLogging {
 		case StartGame => {
 			val players = connectedPlayers.keys.toList
 			connectedPlayers map {
-				case (player, actor) =>
+				case (player, actor) => {
+					println("send start game to: " + actor)
 					actor ! StartGame(players)
+				}
 			}
 		}
 		case x => println("receive on server " + x)

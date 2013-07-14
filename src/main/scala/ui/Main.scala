@@ -31,6 +31,8 @@ case class GoToGameCreation(player: Player)
 
 case class GoToJoinGame(player: Player)
 
+case class GoToConnectIp(player: Player)
+
 case class GoToGame(players: List[Player])
 
 case class JoinPlayer(player: Player)
@@ -72,6 +74,7 @@ object Main extends JFXApp {
 	loadPresenter(classOf[GameCreationPresenter])
 	loadPresenter(classOf[JoinGamePresenter])
 	loadPresenter(classOf[GamePresenter])
+	loadPresenter(classOf[ConnectGamePresenter])
 
 	Thread.sleep(1000)
 	publish(StartEvent)

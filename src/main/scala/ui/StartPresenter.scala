@@ -18,6 +18,10 @@ class StartPresenter extends Presenter[StartView] {
 		publish(GoToJoinGame(player))
 	}
 
+	def connectIp {
+		publish(GoToConnectIp(player))
+	}
+
 	def receive = {
 		case StartEvent => {
 			createView

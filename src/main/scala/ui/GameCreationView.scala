@@ -55,7 +55,7 @@ class GameCreationView(presenter: GameCreationPresenter) extends AbstractScene {
 	}
 
 	private lazy val addCpuPlayerButton = new Button {
-		text = "CPU hinzufügen"
+		text = "CPU hinzufÃ¼gen"
 		disable = false
 		onAction = (event: ActionEvent) => presenter.newCpuPlayer
 	}

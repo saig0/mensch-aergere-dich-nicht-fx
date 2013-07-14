@@ -14,12 +14,13 @@ import communication.ConnectedPlayer
 import communication.StartGame
 import model.Player
 import communication.StartGame
+import communication.Client
 
 class GameCreationPresenter extends Presenter[GameCreationView] {
 
 	lazy val view = new GameCreationView(this)
 
-	val events = List(GoToGameCreation(Player("")), EndEvent, JoinPlayer(Player("")), StartGame(List[Player]()))
+	val events = List(GoToGameCreation(Player("")), EndEvent, JoinPlayer(Player("")), StartGame(Nil))
 
 	var game: Option[Game] = None
 
@@ -37,6 +38,7 @@ class GameCreationPresenter extends Presenter[GameCreationView] {
 
 				clientServer = ClientServer.create
 				clientServer ! "Server is up!"
+				// falscher Actor? sollte vielleicht auch ein Client sein oder Server
 				clientServer ! ConnectedPlayer(player, self)
 			})
 		}
@@ -50,7 +52,9 @@ class GameCreationPresenter extends Presenter[GameCreationView] {
 			game map (GameServerClient.deleteGame(_))
 		}
 		case StartGame(players) => {
-			println("start game" + players)
+			updateUi(GameServerClient.deleteGame(game.get), { _: Unit =>
+				Main.publish(GoToGame(players))
+			})
 		}
 	}
 

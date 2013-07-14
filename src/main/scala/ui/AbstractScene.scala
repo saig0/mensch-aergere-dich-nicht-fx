@@ -35,7 +35,7 @@ abstract class AbstractScene extends Scene {
 			alignment = Pos.CENTER
 			content = List(
 				new Text {
-					text = "Mensch ärgere dich nicht"
+					text = "Mensch Ã¤rgere dich nicht"
 					id = "h1"
 					effect = new Reflection
 					fill = new LinearGradient(
