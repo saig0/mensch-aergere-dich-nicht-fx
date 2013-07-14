@@ -1,18 +1,13 @@
-package ui
-
-import scalafx.scene.Scene
+package ui.view
 import scalafx.scene.layout._
-import scalafx.geometry.Insets
-import scalafx.scene.text.Text
 import scalafx.scene.effect._
 import scalafx.scene.paint._
 import scalafx.scene.control.Label
 import scalafx.scene.control.TextField
 import scalafx.scene.control.Button
 import scalafx.geometry.Pos
-import javafx.event.EventHandler
 import javafx.event.ActionEvent
-import javafx.event.Event
+import ui.presenter.StartPresenter
 
 class StartView(presenter: StartPresenter) extends AbstractScene {
 

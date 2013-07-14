@@ -1,13 +1,14 @@
-package ui
+package ui.presenter
 
 import scala.concurrent.Future
 import scala.util.Success
 import scala.util.Failure
 import scalafx.application.Platform
 import dispatch._
-import Defaults._
+import dispatch.Defaults._
 import akka.actor.Actor
-import akka.actor.Props
+import ui.Main
+import ui.view.AbstractScene
 
 trait Presenter[V <: AbstractScene] extends Actor {
 

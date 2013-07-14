@@ -1,4 +1,7 @@
-package ui
+package ui.presenter
+
+import ui.view.GameView
+import ui.GoToGame
 
 class GamePresenter extends Presenter[GameView] {
 

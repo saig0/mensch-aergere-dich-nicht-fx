@@ -19,7 +19,10 @@ import scalafx.scene.layout.VBox
 import akka.actor.ActorSystem
 import akka.actor.Props
 import scalafx.application.Platform
+import ui.view.AbstractScene
+import ui.presenter.Presenter
 import model.Player
+import ui.presenter._
 
 case class StartEvent
 

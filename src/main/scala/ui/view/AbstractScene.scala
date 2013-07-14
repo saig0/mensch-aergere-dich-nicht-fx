@@ -1,4 +1,4 @@
-package ui
+package ui.view
 
 import scalafx.scene.Scene
 import scalafx.scene.layout._
@@ -6,25 +6,18 @@ import scalafx.geometry.Insets
 import scalafx.scene.text.Text
 import scalafx.scene.effect._
 import scalafx.scene.paint._
-import scalafx.scene.control.Label
-import scalafx.scene.control.TextField
-import scalafx.scene.control.Button
 import scalafx.geometry.Pos
 import javafx.event.EventHandler
-import javafx.event.ActionEvent
 import javafx.event.Event
 import scalafx.scene.Node
-import scala.concurrent.Future
-import scalafx.application.Platform
 import dispatch._
-import Defaults._
-import scala.util.Success
-import scala.util.Failure
+import dispatch.Defaults._
 import javafx.collections.ObservableList
 import javafx.collections.FXCollections
 import java.util.LinkedList
 import scalafx.scene.control.TableColumn
 import scalafx.beans.property.ObjectProperty
+import scalafx.scene.paint.Stop.sfxStop2jfx
 
 abstract class AbstractScene extends Scene {
 

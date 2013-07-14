@@ -1,27 +1,15 @@
-package ui
-
-import scalafx.scene.Scene
+package ui.view
 import scalafx.scene.layout._
-import scalafx.geometry.Insets
-import scalafx.scene.text.Text
 import scalafx.scene.effect._
 import scalafx.scene.paint._
 import scalafx.scene.control.Label
 import scalafx.scene.control.TextField
 import scalafx.scene.control.Button
 import scalafx.geometry.Pos
-import scalafx.scene.control.ProgressIndicator
-import rest.GameServerClient
-import model.Game
-import scalafx.application.Platform
 import dispatch._
-import Defaults._
-import scalafx.scene.control.TableView
-import model.Player
-import scalafx.scene.control.TableColumn
+import dispatch.Defaults._
 import javafx.event.ActionEvent
-import javafx.scene.input.MouseEvent
-import javafx.scene.input.KeyEvent
+import ui.presenter.ConnectGamePresenter
 
 class ConnectGameView(presenter: ConnectGamePresenter) extends AbstractScene {
 

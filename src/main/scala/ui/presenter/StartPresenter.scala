@@ -1,6 +1,12 @@
-package ui
+package ui.presenter
 
 import model.Player
+import ui.view.StartView
+import ui.StartEvent
+import ui.GoToStart
+import ui.GoToGameCreation
+import ui.GoToJoinGame
+import ui.GoToConnectIp
 
 class StartPresenter extends Presenter[StartView] {
 

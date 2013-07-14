@@ -1,4 +1,4 @@
-package ui
+package ui.presenter
 
 import rest.GameServerClient
 import model.Game
@@ -15,6 +15,13 @@ import communication.StartGame
 import model.Player
 import communication.StartGame
 import communication.Client
+import ui.view.GameCreationView
+import ui.GoToGameCreation
+import ui.EndEvent
+import ui.JoinPlayer
+import ui.Main
+import ui.GoToGame
+import ui.GoToStart
 
 class GameCreationPresenter extends Presenter[GameCreationView] {
 

@@ -1,4 +1,4 @@
-package ui
+package ui.presenter
 
 import model.Player
 import rest.GameServerClient
@@ -8,6 +8,11 @@ import akka.actor.ActorRef
 import communication.ConnectedPlayer
 import communication.StartGame
 import communication.ClientMessage
+import ui.view.ConnectGameView
+import ui.GoToConnectIp
+import ui.Main
+import ui.GoToGame
+import ui.GoToStart
 
 class ConnectGamePresenter extends Presenter[ConnectGameView] {
 
