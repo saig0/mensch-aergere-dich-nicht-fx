@@ -9,6 +9,7 @@ import model.Player
 import akka.actor.ActorRef
 import ui.Main
 import ui.JoinPlayer
+import ui.EndEvent
 
 case class ConnectedPlayer(player: Player, actor: ActorRef)
 
@@ -18,12 +19,15 @@ case class StartGame(players: List[Player])
 
 object ClientServer {
 
+	lazy val system: ActorSystem = ActorSystem("ClientServer", ConfigFactory.load.getConfig("clientServer"))
+
 	def create = {
-		val system = ActorSystem("ClientServer",
-			ConfigFactory.load.getConfig("clientServer"))
 		val actor = system.actorOf(Props[ClientServer], name = "clientServer")
+		server = actor
 		actor
 	}
+
+	var server: ActorRef = _
 
 }
 
@@ -33,9 +37,10 @@ class ClientServer extends Actor with ActorLogging {
 
 	def receive = {
 		case ConnectedPlayer(player, actor) => {
-			connectedPlayers += (player -> sender)
-			Main.publish(JoinPlayer(player))
-			sender ! "Ok"
+			connectedPlayers += (player -> actor)
+			sendAll { _ =>
+				JoinPlayer(player)
+			}
 		}
 		case DisconnectPlayer(player) => {
 			connectedPlayers(player) ! DisconnectPlayer
@@ -43,14 +48,20 @@ class ClientServer extends Actor with ActorLogging {
 		}
 		case StartGame => {
 			val players = connectedPlayers.keys.toList
-			connectedPlayers map {
-				case (player, actor) => {
-					println("send start game to: " + actor)
-					actor ! StartGame(players)
-				}
+			sendAll { _ =>
+				StartGame(players)
 			}
 		}
 		case x => println("receive on server " + x)
+	}
+
+	def sendAll = (event: Player => Any) => {
+		val players = connectedPlayers.keys.toList
+		connectedPlayers map {
+			case (player, actor) => {
+				actor ! event(player)
+			}
+		}
 	}
 
 }

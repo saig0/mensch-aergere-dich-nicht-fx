@@ -42,9 +42,8 @@ class ConnectGamePresenter extends Presenter[ConnectGameView] {
 		val ip = view.ip
 		println("conntect to " + ip)
 		updateUi("Verbinde zum Server " + ip, {
-			clientServer = Client.create(ip)
+			clientServer = Client.create(player, ip)
 			clientServer ! ClientMessage("Client is up!")
-			clientServer ! ClientMessage(ConnectedPlayer(player, self))
 		})
 	}
 

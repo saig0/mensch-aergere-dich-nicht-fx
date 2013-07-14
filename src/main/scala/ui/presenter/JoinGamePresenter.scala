@@ -40,9 +40,8 @@ class JoinGamePresenter extends Presenter[JoinGameView] {
 		val game = view.selectedGame
 		println("join " + game)
 		updateUi("Verbinde zum Server " + game.address, {
-			clientServer = Client.create(game.address)
+			clientServer = Client.create(player, game.address)
 			clientServer ! "Client is up!"
-			clientServer ! ConnectedPlayer(player, self)
 		})
 	}
 

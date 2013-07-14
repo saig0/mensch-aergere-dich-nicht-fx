@@ -23,6 +23,8 @@ import ui.view.AbstractScene
 import ui.presenter.Presenter
 import ui.presenter._
 import model.Player
+import communication.ClientServer
+import javafx.stage.WindowEvent
 
 case class StartEvent
 
@@ -51,8 +53,13 @@ object Main extends JFXApp {
 
 		centerOnScreen
 
-		onCloseRequest = {
+		onHidden = (event: WindowEvent) => println("hidden")
+
+		onCloseRequest = (event: WindowEvent) => {
+			println("End")
 			publish(EndEvent)
+			Thread.sleep(1000)
+			ClientServer.system.shutdown
 			system.shutdown
 		}
 	}

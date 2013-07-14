@@ -31,7 +31,7 @@ class GameCreationPresenter extends Presenter[GameCreationView] {
 
 	var game: Option[Game] = None
 
-	var clientServer: ActorRef = _
+	var client: ActorRef = _
 
 	var player: Player = _
 
@@ -43,10 +43,10 @@ class GameCreationPresenter extends Presenter[GameCreationView] {
 				this.game = Some(game)
 				view.showGame(game)
 
-				clientServer = ClientServer.create
-				clientServer ! "Server is up!"
-				// falscher Actor? sollte vielleicht auch ein Client sein oder Server
-				clientServer ! ConnectedPlayer(player, self)
+				val server = ClientServer.create
+				server ! "Server is up!"
+				client = Client.create(player)
+				client ! "Client of Server is up!"
 			})
 		}
 		case JoinPlayer(player) => {
@@ -66,13 +66,13 @@ class GameCreationPresenter extends Presenter[GameCreationView] {
 	}
 
 	def newCpuPlayer {
-		ComputerPlayer.create(clientServer)
+		ComputerPlayer.create
 	}
 
 	def removePlayer {
 		val player = view.selectedPlayer
 		if (player != this.player) {
-			clientServer
+			client
 			game = game map (g => g.copy(currentPlayers = g.currentPlayers - 1))
 			updateUi(GameServerClient.updateGame(game.get), { _: Unit =>
 				view.removePlayer(player)
@@ -83,7 +83,7 @@ class GameCreationPresenter extends Presenter[GameCreationView] {
 	def startGame {
 		val game = this.game.get
 		if (game.currentPlayers == game.maxPlayers) {
-			clientServer ! StartGame
+			client ! StartGame
 		}
 	}
 

@@ -14,9 +14,10 @@ object ComputerPlayer {
 
 	var cpuPlayer = 0
 
-	def create(server: ActorRef) = {
+	def create = {
 		cpuPlayer += 1
-		val actor = Main.system.actorOf(Props(new ComputerPlayer(server)), "cpuPlayer_" + cpuPlayer)
+		val server = ClientServer.server
+		val actor = ClientServer.system.actorOf(Props(new ComputerPlayer(server)), "cpuPlayer_" + cpuPlayer)
 		val player = Player("CPU" + cpuPlayer)
 		server ! ConnectedPlayer(player, actor)
 		actor
