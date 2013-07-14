@@ -53,15 +53,15 @@ object Main extends JFXApp {
 
 		centerOnScreen
 
-		onHidden = (event: WindowEvent) => println("hidden")
+		onCloseRequest = closeApplication
 
-		onCloseRequest = (event: WindowEvent) => {
-			println("End")
-			publish(EndEvent)
-			Thread.sleep(1000)
-			ClientServer.system.shutdown
-			system.shutdown
-		}
+	}
+
+	private def closeApplication {
+		publish(EndEvent)
+		Thread.sleep(1000)
+		ClientServer.system.shutdown
+		system.shutdown
 	}
 
 	def loadSceen[S <: AbstractScene](scene: S) = {
