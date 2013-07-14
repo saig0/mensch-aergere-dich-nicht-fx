@@ -14,8 +14,9 @@ case class ClientMessage(x: Any)
 
 object Client {
 
+	lazy val system = ActorSystem("Client", ConfigFactory.load.getConfig("client"))
+
 	def create(player: Player, remoteServerIp: String = "127.0.0.1"): ActorRef = {
-		val system = ClientServer.system
 		val server = system.actorFor(
 			"akka://ClientServer@" + remoteServerIp + ":2553/user/clientServer")
 		val actor = system.actorOf(Props(new Client(server)), "client")
@@ -26,17 +27,23 @@ object Client {
 	}
 }
 
-class Client(remoteActor: ActorRef) extends Actor with ActorLogging {
+class Client(server: ActorRef) extends Actor with ActorLogging {
 
 	def receive = {
 		case ClientMessage(x) => {
 			println("sending to server")
-			remoteActor ! x
+			server ! x
 		}
 		case event @ StartGame(player) => {
 			Main.publish(event)
 		}
 		case event @ JoinPlayer(player) => {
+			Main.publish(event)
+		}
+		case event @ StartGame => {
+			server ! event
+		}
+		case event @ StartGame(players) => {
 			Main.publish(event)
 		}
 		case x => println("receive on client " + x)

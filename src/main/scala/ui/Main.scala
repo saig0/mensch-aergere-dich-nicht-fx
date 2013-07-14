@@ -25,6 +25,7 @@ import ui.presenter._
 import model.Player
 import communication.ClientServer
 import javafx.stage.WindowEvent
+import communication.Client
 
 case class StartEvent
 
@@ -61,6 +62,7 @@ object Main extends JFXApp {
 		publish(EndEvent)
 		Thread.sleep(1000)
 		ClientServer.system.shutdown
+		Client.system.shutdown
 		system.shutdown
 	}
 
