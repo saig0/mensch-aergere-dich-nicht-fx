@@ -9,11 +9,8 @@ import akka.actor.ActorRef
 import communication.ComputerPlayer
 import model.Player
 import communication.DisconnectPlayer
-import communication.StartGame
 import communication.ConnectedPlayer
-import communication.StartGame
 import model.Player
-import communication.StartGame
 import communication.Client
 import ui.view.GameCreationView
 import ui.GoToGameCreation
@@ -22,12 +19,14 @@ import ui.JoinPlayer
 import ui.Main
 import ui.GoToGame
 import ui.GoToStart
+import ui.GoToGameCreation
+import ui.StartGame
 
 class GameCreationPresenter extends Presenter[GameCreationView] {
 
 	lazy val view = new GameCreationView(this)
 
-	val events = List(GoToGameCreation(Player("")), EndEvent, JoinPlayer(Player("")), StartGame(Nil))
+	val events = List(JoinPlayer(Player("")), StartGame(Nil))
 
 	var game: Option[Game] = None
 
@@ -35,10 +34,11 @@ class GameCreationPresenter extends Presenter[GameCreationView] {
 
 	var player: Player = _
 
-	def receive = {
+	val startEvent = GoToGameCreation(Player(""))
+
+	def onStart = {
 		case GoToGameCreation(player) => {
 			this.player = player
-			createView
 			updateUi("Erstelle Spiel auf Server", GameServerClient.newGame(4, 0), { (game: Game) =>
 				this.game = Some(game)
 				view.showGame(game)
@@ -49,6 +49,13 @@ class GameCreationPresenter extends Presenter[GameCreationView] {
 				client ! "Client of Server is up!"
 			})
 		}
+	}
+
+	def onEnd {
+		game map (GameServerClient.deleteGame(_))
+	}
+
+	def on = {
 		case JoinPlayer(player) => {
 			game = game map (g => g.copy(currentPlayers = g.currentPlayers + 1))
 			game map { g =>
@@ -57,9 +64,6 @@ class GameCreationPresenter extends Presenter[GameCreationView] {
 				})
 			}
 		}
-		case EndEvent => {
-			game map (GameServerClient.deleteGame(_))
-		}
 		case StartGame(players) => {
 			game map { g =>
 				updateUi("Entferne Spiel vom Server", GameServerClient.deleteGame(g), { _: Unit =>
@@ -67,6 +71,10 @@ class GameCreationPresenter extends Presenter[GameCreationView] {
 				})
 			}
 		}
+	}
+
+	def onStart(event: GoToGameCreation) {
+		this.player = event.player
 	}
 
 	def newCpuPlayer {
@@ -87,12 +95,12 @@ class GameCreationPresenter extends Presenter[GameCreationView] {
 	def startGame {
 		val game = this.game.get
 		if (game.currentPlayers == game.maxPlayers) {
-			client ! StartGame
+			client ! communication.StartGame
 		}
 	}
 
 	def abort {
 		game map (GameServerClient.deleteGame(_))
-		publish(GoToStart)
+		publish(GoToStart())
 	}
 }

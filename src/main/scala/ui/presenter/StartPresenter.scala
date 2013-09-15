@@ -2,17 +2,25 @@ package ui.presenter
 
 import model.Player
 import ui.view.StartView
-import ui.StartEvent
 import ui.GoToStart
 import ui.GoToGameCreation
 import ui.GoToJoinGame
 import ui.GoToConnectIp
+import ui.ClientEvent
 
 class StartPresenter extends Presenter[StartView] {
 
 	lazy val view = new StartView(StartPresenter.this)
 
-	val events = List(StartEvent, GoToStart)
+	val events = List[ClientEvent]()
+
+	val startEvent = GoToStart()
+
+	def onStart = {
+		case _ =>
+	}
+
+	def onEnd {}
 
 	def player = Player(view.playerName)
 
@@ -28,12 +36,7 @@ class StartPresenter extends Presenter[StartView] {
 		publish(GoToConnectIp(player))
 	}
 
-	def receive = {
-		case StartEvent => {
-			createView
-		}
-		case GoToStart => {
-			createView
-		}
+	def on = {
+		case _ =>
 	}
 }

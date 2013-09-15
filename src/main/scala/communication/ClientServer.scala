@@ -11,11 +11,13 @@ import ui.Main
 import ui.JoinPlayer
 import ui.EndEvent
 
-case class ConnectedPlayer(player: Player, actor: ActorRef)
+trait ServerEvent
 
-case class DisconnectPlayer(player: Player)
+case class ConnectedPlayer(player: Player, actor: ActorRef) extends ServerEvent
 
-case class StartGame(players: List[Player])
+case class DisconnectPlayer(player: Player) extends ServerEvent
+
+case class StartGame(players: List[Player]) extends ServerEvent
 
 object ClientServer {
 

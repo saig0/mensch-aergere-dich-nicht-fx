@@ -10,12 +10,32 @@ import dispatch.Defaults._
 import akka.actor.Actor
 import ui.Main
 import ui.view.AbstractScene
+import ui.NavigationEvent
+import ui.ClientEvent
+import ui.NavigationEvent
+import ui.NavigationEvent
+import ui.NavigationEvent
+import ui.NavigationEvent
+import ui.NavigationEvent
+import ui.NavigationEvent
+import ui.EndEvent
+import ui.EndEvent
+import ui.ClientEvent
+import ui.GoToStart
+import ui.GoToGameCreation
+import model.Player
+import ui.GoToJoinGame
+import model.Player
+import ui.GoToConnectIp
+import ui.GoToGame
+import ui.NavigationEvent
+import ui.NavigationEvent
 
 trait Presenter[V <: AbstractScene] extends Actor {
 
 	val view: V
 
-	val events: List[Any]
+	val events: List[ClientEvent]
 
 	def createView {
 		Platform.runLater {
@@ -55,6 +75,35 @@ trait Presenter[V <: AbstractScene] extends Actor {
 	}
 
 	override def preStart {
-		subscripe(this, events)
+		subscripe(this, events ::: navigationEvents ::: EndEvent :: Nil)
 	}
+
+	val navigationEvents: List[NavigationEvent] = List(GoToStart(), GoToGameCreation(Player("")), GoToJoinGame(Player("")), GoToConnectIp(Player("")), GoToGame(Nil))
+
+	val startEvent: NavigationEvent
+
+	def onStart: NavigationEvent => Unit
+
+	def onEnd: Unit
+
+	var active = false
+
+	def receive = {
+		case event: NavigationEvent if (event.getClass == startEvent.getClass) => {
+			active = true
+			createView
+			onStart(event)
+		}
+		case event: NavigationEvent if (active) => {
+			active = false
+			onEnd
+		}
+		case event: EndEvent if (active) => {
+			active = false
+			onEnd
+		}
+		case event: ClientEvent if (active) => on(event)
+	}
+
+	def on: ClientEvent => Unit
 }

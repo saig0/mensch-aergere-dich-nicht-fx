@@ -5,8 +5,6 @@ import rest.GameServerClient
 import model.Game
 import communication.Client
 import akka.actor.ActorRef
-import communication.ConnectedPlayer
-import communication.StartGame
 import ui.view.JoinGameView
 import ui.GoToJoinGame
 import ui.Main
@@ -15,23 +13,28 @@ import ui.GoToGame
 import ui.JoinPlayer
 import ui.JoinPlayer
 import model.Player
+import ui.StartGame
 
 class JoinGamePresenter extends Presenter[JoinGameView] {
 
 	lazy val view = new JoinGameView(this)
 
-	val events = List(GoToJoinGame(Player("")), JoinPlayer(Player("")), StartGame(Nil))
+	val events = List(JoinPlayer(Player("")), StartGame(Nil))
 
 	var clientServer: ActorRef = _
 
 	var player: Player = _
 
-	def receive = {
+	val startEvent = GoToJoinGame(Player(""))
+
+	def onStart = {
 		case GoToJoinGame(player) => {
 			this.player = player
-			createView
 			loadGames
 		}
+	}
+
+	def on = {
 		case StartGame(players) => {
 			updateUi(
 				Main.publish(GoToGame(players))
@@ -43,6 +46,8 @@ class JoinGamePresenter extends Presenter[JoinGameView] {
 			}
 		}
 	}
+
+	def onEnd {}
 
 	def joinGame {
 		val game = view.selectedGame
@@ -60,6 +65,6 @@ class JoinGamePresenter extends Presenter[JoinGameView] {
 	}
 
 	def abort {
-		publish(GoToStart)
+		publish(GoToStart())
 	}
 }

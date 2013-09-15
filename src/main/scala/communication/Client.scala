@@ -35,8 +35,8 @@ class Client(server: ActorRef) extends Actor with ActorLogging {
 			println("sending to server")
 			server ! x
 		}
-		case event @ StartGame(player) => {
-			Main.publish(event)
+		case event @ StartGame(players) => {
+			Main.publish(ui.StartGame(players))
 		}
 		case event @ JoinPlayer(player) => {
 			Main.publish(event)

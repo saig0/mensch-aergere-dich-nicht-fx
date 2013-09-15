@@ -6,7 +6,6 @@ import model.Game
 import communication.Client
 import akka.actor.ActorRef
 import communication.ConnectedPlayer
-import communication.StartGame
 import communication.ClientMessage
 import ui.view.ConnectGameView
 import ui.GoToConnectIp
@@ -16,22 +15,30 @@ import ui.GoToStart
 import scala.concurrent.future
 import ui.JoinPlayer
 import ui.JoinPlayer
+import ui.GoToConnectIp
+import ui.StartGame
 
 class ConnectGamePresenter extends Presenter[ConnectGameView] {
 
 	lazy val view = new ConnectGameView(this)
 
-	val events = List(GoToConnectIp(Player("")), JoinPlayer(Player("")), StartGame(Nil))
+	val events = List(JoinPlayer(Player("")), StartGame(Nil))
 
 	var clientServer: ActorRef = _
 
 	var player: Player = _
 
-	def receive = {
+	val startEvent = GoToConnectIp(Player(""))
+
+	def onStart = {
 		case GoToConnectIp(player) => {
 			this.player = player
-			createView
 		}
+	}
+
+	def onEnd {}
+
+	def on = {
 		case StartGame(players) => {
 			updateUi(
 				Main.publish(GoToGame(players))
@@ -42,12 +49,10 @@ class ConnectGamePresenter extends Presenter[ConnectGameView] {
 				view.showLoading("Verbunden mit " + view.ip + ". Warte auf Spiel Start.")
 			}
 		}
-		case x => println("received: " + x)
 	}
 
 	def joinGame {
 		val ip = view.ip
-		println("conntect to " + ip)
 		updateUi("Verbinde zum Server " + ip, {
 			clientServer = Client.create(player, ip)
 			clientServer ! ClientMessage("Client is up!")
@@ -55,6 +60,6 @@ class ConnectGamePresenter extends Presenter[ConnectGameView] {
 	}
 
 	def abort {
-		publish(GoToStart)
+		publish(GoToStart())
 	}
 }

@@ -27,21 +27,25 @@ import communication.ClientServer
 import javafx.stage.WindowEvent
 import communication.Client
 
-case class StartEvent
+trait ClientEvent
 
-case class EndEvent
+trait NavigationEvent extends ClientEvent
 
-case class GoToStart
+case class EndEvent extends ClientEvent
 
-case class GoToGameCreation(player: Player)
+case class GoToStart extends NavigationEvent
 
-case class GoToJoinGame(player: Player)
+case class GoToGameCreation(player: Player) extends NavigationEvent
 
-case class GoToConnectIp(player: Player)
+case class GoToJoinGame(player: Player) extends NavigationEvent
 
-case class GoToGame(players: List[Player])
+case class GoToConnectIp(player: Player) extends NavigationEvent
 
-case class JoinPlayer(player: Player)
+case class GoToGame(players: List[Player]) extends NavigationEvent
+
+case class JoinPlayer(player: Player) extends ClientEvent
+
+case class StartGame(players: List[Player]) extends ClientEvent
 
 object Main extends JFXApp {
 
@@ -89,5 +93,5 @@ object Main extends JFXApp {
 	loadPresenter(classOf[ConnectGamePresenter])
 
 	Thread.sleep(1000)
-	publish(StartEvent)
+	publish(GoToStart())
 }
