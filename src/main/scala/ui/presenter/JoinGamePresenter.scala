@@ -12,12 +12,15 @@ import ui.GoToJoinGame
 import ui.Main
 import ui.GoToStart
 import ui.GoToGame
+import ui.JoinPlayer
+import ui.JoinPlayer
+import model.Player
 
 class JoinGamePresenter extends Presenter[JoinGameView] {
 
 	lazy val view = new JoinGameView(this)
 
-	val events = List(GoToJoinGame(Player("")), StartGame(Nil))
+	val events = List(GoToJoinGame(Player("")), JoinPlayer(Player("")), StartGame(Nil))
 
 	var clientServer: ActorRef = _
 
@@ -33,6 +36,11 @@ class JoinGamePresenter extends Presenter[JoinGameView] {
 			updateUi(
 				Main.publish(GoToGame(players))
 			)
+		}
+		case JoinPlayer(joinedPlayer) if (joinedPlayer == player) => {
+			updateUi {
+				view.showLoading("Verbunden mit Server. Warte auf Spiel Start.")
+			}
 		}
 	}
 

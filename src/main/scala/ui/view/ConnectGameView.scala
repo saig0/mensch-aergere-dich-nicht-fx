@@ -14,6 +14,7 @@ import ui.presenter.ConnectGamePresenter
 class ConnectGameView(presenter: ConnectGamePresenter) extends AbstractScene {
 
 	private lazy val ipField = new TextField {
+		text = "127.0.0.1"
 	}
 
 	private lazy val connectButton = new Button {

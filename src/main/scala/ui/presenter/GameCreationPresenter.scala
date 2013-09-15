@@ -51,17 +51,21 @@ class GameCreationPresenter extends Presenter[GameCreationView] {
 		}
 		case JoinPlayer(player) => {
 			game = game map (g => g.copy(currentPlayers = g.currentPlayers + 1))
-			updateUi(GameServerClient.updateGame(game.get), { _: Unit =>
-				view.joinPlayer(player)
-			})
+			game map { g =>
+				updateUi(GameServerClient.updateGame(g), { _: Unit =>
+					view.joinPlayer(player)
+				})
+			}
 		}
 		case EndEvent => {
 			game map (GameServerClient.deleteGame(_))
 		}
 		case StartGame(players) => {
-			updateUi("Entferne Spiel vom Server", GameServerClient.deleteGame(game.get), { _: Unit =>
-				Main.publish(GoToGame(players))
-			})
+			game map { g =>
+				updateUi("Entferne Spiel vom Server", GameServerClient.deleteGame(g), { _: Unit =>
+					Main.publish(GoToGame(players))
+				})
+			}
 		}
 	}
 

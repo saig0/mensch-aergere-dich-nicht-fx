@@ -1,0 +1,1 @@
+To package the application, simply run the package-javafx task on sbt.

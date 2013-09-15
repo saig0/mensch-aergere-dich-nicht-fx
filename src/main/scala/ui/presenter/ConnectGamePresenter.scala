@@ -14,12 +14,14 @@ import ui.Main
 import ui.GoToGame
 import ui.GoToStart
 import scala.concurrent.future
+import ui.JoinPlayer
+import ui.JoinPlayer
 
 class ConnectGamePresenter extends Presenter[ConnectGameView] {
 
 	lazy val view = new ConnectGameView(this)
 
-	val events = List(GoToConnectIp(Player("")), StartGame(Nil))
+	val events = List(GoToConnectIp(Player("")), JoinPlayer(Player("")), StartGame(Nil))
 
 	var clientServer: ActorRef = _
 
@@ -34,6 +36,11 @@ class ConnectGamePresenter extends Presenter[ConnectGameView] {
 			updateUi(
 				Main.publish(GoToGame(players))
 			)
+		}
+		case JoinPlayer(joinedPlayer) if (joinedPlayer == player) => {
+			updateUi {
+				view.showLoading("Verbunden mit " + view.ip + ". Warte auf Spiel Start.")
+			}
 		}
 		case x => println("received: " + x)
 	}

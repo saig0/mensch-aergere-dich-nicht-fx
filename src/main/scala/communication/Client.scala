@@ -21,6 +21,7 @@ object Client {
 			"akka://ClientServer@" + remoteServerIp + ":2553/user/clientServer")
 		val actor = system.actorOf(Props(new Client(server)), "client")
 
+		// löst eine Exception aus, wenn keine Verbindung aufgebaut werden kann
 		server ! ConnectedPlayer(player, actor)
 
 		actor
@@ -42,9 +43,6 @@ class Client(server: ActorRef) extends Actor with ActorLogging {
 		}
 		case event @ StartGame => {
 			server ! event
-		}
-		case event @ StartGame(players) => {
-			Main.publish(event)
 		}
 		case x => println("receive on client " + x)
 	}

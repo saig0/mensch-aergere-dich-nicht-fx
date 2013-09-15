@@ -12,6 +12,9 @@ class GamePresenter extends Presenter[GameView] {
 	def receive = {
 		case GoToGame(players) => {
 			createView
+			updateUi {
+				view.start(players)
+			}
 		}
 	}
 }
