@@ -39,7 +39,7 @@ trait Presenter[V <: AbstractScene] extends Actor {
 
 	def createView {
 		Platform.runLater {
-			Main.loadSceen(view)
+			Main.switchToPresenter(this)
 		}
 	}
 
@@ -75,10 +75,8 @@ trait Presenter[V <: AbstractScene] extends Actor {
 	}
 
 	override def preStart {
-		subscripe(this, events ::: navigationEvents ::: EndEvent :: Nil)
+		subscripe(this, events ::: startEvent :: EndEvent :: Nil)
 	}
-
-	val navigationEvents: List[NavigationEvent] = List(GoToStart(), GoToGameCreation(Player("")), GoToJoinGame(Player("")), GoToConnectIp(Player("")), GoToGame(Nil))
 
 	val startEvent: NavigationEvent
 
@@ -93,10 +91,6 @@ trait Presenter[V <: AbstractScene] extends Actor {
 			active = true
 			createView
 			onStart(event)
-		}
-		case event: NavigationEvent if (active) => {
-			active = false
-			onEnd
 		}
 		case event: EndEvent if (active) => {
 			active = false

@@ -51,6 +51,8 @@ object Main extends JFXApp {
 
 	val system = ActorSystem.create("EventBus")
 
+	var activePresenter: Option[Presenter[_]] = None
+
 	stage = new JFXApp.PrimaryStage {
 		title = "Mensch-Ärgere-Dich-Nicht-FX"
 		width = 1200
@@ -70,9 +72,18 @@ object Main extends JFXApp {
 		system.shutdown
 	}
 
-	def loadSceen[S <: AbstractScene](scene: S) = {
+	private def loadSceen[S <: AbstractScene](scene: S) = {
 		scene.stylesheets += loadCss
 		stage.scene = scene
+	}
+
+	def switchToPresenter[V <: AbstractScene](presenter: Presenter[V]) {
+		activePresenter map { p =>
+			p.onEnd
+			p.active = false
+		}
+		loadSceen(presenter.view)
+		activePresenter = Some(presenter)
 	}
 
 	private lazy val loadCss =

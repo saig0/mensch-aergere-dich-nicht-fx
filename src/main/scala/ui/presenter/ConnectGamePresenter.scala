@@ -49,6 +49,7 @@ class ConnectGamePresenter extends Presenter[ConnectGameView] {
 				view.showLoading("Verbunden mit " + view.ip + ". Warte auf Spiel Start.")
 			}
 		}
+		case _ =>
 	}
 
 	def joinGame {
