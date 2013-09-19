@@ -19,6 +19,8 @@ case class DisconnectPlayer(player: Player) extends ServerEvent
 
 case class StartGame(players: List[Player]) extends ServerEvent
 
+case class NewTurn(player: Player) extends ServerEvent
+
 object ClientServer {
 
 	lazy val system: ActorSystem = ActorSystem("ClientServer", ConfigFactory.load.getConfig("clientServer"))
@@ -52,6 +54,10 @@ class ClientServer extends Actor with ActorLogging {
 			val players = connectedPlayers.keys.toList
 			sendAll { _ =>
 				StartGame(players)
+			}
+			Thread.sleep(1000)
+			sendAll { _ =>
+				NewTurn(players.head)
 			}
 		}
 		case x => println("receive on server " + x)

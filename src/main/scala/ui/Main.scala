@@ -41,11 +41,13 @@ case class GoToJoinGame(player: Player) extends NavigationEvent
 
 case class GoToConnectIp(player: Player) extends NavigationEvent
 
-case class GoToGame(players: List[Player]) extends NavigationEvent
+case class GoToGame(players: List[Player], self: Player) extends NavigationEvent
 
 case class JoinPlayer(player: Player) extends ClientEvent
 
 case class StartGame(players: List[Player]) extends ClientEvent
+
+case class NewTurn(player: Player) extends ClientEvent
 
 object Main extends JFXApp {
 

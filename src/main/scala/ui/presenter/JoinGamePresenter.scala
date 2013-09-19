@@ -37,7 +37,7 @@ class JoinGamePresenter extends Presenter[JoinGameView] {
 	def on = {
 		case StartGame(players) => {
 			updateUi(
-				Main.publish(GoToGame(players))
+				Main.publish(GoToGame(players, player))
 			)
 		}
 		case JoinPlayer(joinedPlayer) if (joinedPlayer == player) => {

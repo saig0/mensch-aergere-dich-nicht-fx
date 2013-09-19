@@ -67,7 +67,7 @@ class GameCreationPresenter extends Presenter[GameCreationView] {
 		case StartGame(players) => {
 			game map { g =>
 				updateUi("Entferne Spiel vom Server", GameServerClient.deleteGame(g), { _: Unit =>
-					Main.publish(GoToGame(players))
+					Main.publish(GoToGame(players, player))
 				})
 			}
 		}

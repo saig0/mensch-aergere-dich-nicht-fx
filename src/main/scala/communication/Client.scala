@@ -44,6 +44,9 @@ class Client(server: ActorRef) extends Actor with ActorLogging {
 		case event @ StartGame => {
 			server ! event
 		}
+		case event @ NewTurn(player) => {
+			Main.publish(ui.NewTurn(player))
+		}
 		case x => println("receive on client " + x)
 	}
 }

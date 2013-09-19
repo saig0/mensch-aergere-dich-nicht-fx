@@ -9,30 +9,19 @@ import model.Player
 
 class GameView(presenter: GamePresenter) extends AbstractScene {
 
-	def waitForStart {
+	def yourTurn(player: Player) {
 		show {
-			List(
-				new Label {
-					text = "Starte Spiel"
-				},
-				new ProgressIndicator {
-					import ui.view.AbstractScene
-					progress = -1
-				}
-			)
+			new Label {
+				text = "Dein Zug " + player.name
+			}
 		}
 	}
 
-	def start(players: List[Player]) {
+	def newTurn(player: Player) {
 		show {
-			List(
-				new Label {
-					text = "Spiel gestartet"
-				},
-				new Label {
-					text = "Spieler: " + players.map(_.name).mkString(",")
-				}
-			)
+			new Label {
+				text = player.name + " ist am Zug."
+			}
 		}
 	}
 }
