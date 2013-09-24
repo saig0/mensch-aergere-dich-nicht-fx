@@ -19,7 +19,7 @@ case class DisconnectPlayer(player: Player) extends ServerEvent
 
 case class StartGame(players: List[Player]) extends ServerEvent
 
-case class NewTurn(player: Player) extends ServerEvent
+case class NewTurn(player: Player, number: Int) extends ServerEvent
 
 object ClientServer {
 
@@ -56,9 +56,10 @@ class ClientServer extends Actor with ActorLogging {
 				StartGame(players)
 			}
 			Thread.sleep(1000)
-			sendAll { _ =>
-				NewTurn(players.head)
-			}
+
+			val number = 1 + Math.random * 5
+			val turn = NewTurn(players.head, number.toInt)
+			sendAll { _ => turn }
 		}
 		case x => println("receive on server " + x)
 	}

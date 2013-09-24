@@ -47,7 +47,7 @@ case class JoinPlayer(player: Player) extends ClientEvent
 
 case class StartGame(players: List[Player]) extends ClientEvent
 
-case class NewTurn(player: Player) extends ClientEvent
+case class NewTurn(player: Player, number: Int) extends ClientEvent
 
 object Main extends JFXApp {
 

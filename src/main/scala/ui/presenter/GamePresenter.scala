@@ -12,7 +12,7 @@ class GamePresenter extends Presenter[GameView] {
 
 	lazy val view = new GameView(this)
 
-	val events = List(NewTurn(Player("")))
+	val events = List(NewTurn(Player(""), 0))
 
 	val startEvent = GoToGame(Nil, Player(""))
 
@@ -22,20 +22,22 @@ class GamePresenter extends Presenter[GameView] {
 		case GoToGame(players, self) => {
 			this.selfPlayer = self
 			updateUi {
-				view.showLoading("Spiel beginnt! Spieler: " + players.map(_.name).mkString(", "))
+				view.players(players)
 			}
 		}
 	}
 
 	def on = {
-		case NewTurn(player) if (player == selfPlayer) => {
+		case NewTurn(player, number) if (player == selfPlayer) => {
 			updateUi {
 				view.yourTurn(player)
+				view.dice(number)
 			}
 		}
-		case NewTurn(player) => {
+		case NewTurn(player, number) => {
 			updateUi {
 				view.newTurn(player)
+				view.dice(number)
 			}
 		}
 	}
