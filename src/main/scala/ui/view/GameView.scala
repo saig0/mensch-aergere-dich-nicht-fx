@@ -14,6 +14,10 @@ import scalafx.scene.paint.Color._
 import scalafx.animation.TranslateTransition
 import scalafx.animation.SequentialTransition
 import scalafx.animation.RotateTransition
+import scalafx.animation.ParallelTransition
+import scalafx.animation.FadeTransition
+import scalafx.scene.text.Text
+import scalafx.event.ActionEvent
 
 class GameView(presenter: GamePresenter) extends AbstractScene {
 
@@ -21,12 +25,23 @@ class GameView(presenter: GamePresenter) extends AbstractScene {
 
 	lazy val activePlayer = new Label {}
 
-	lazy val dice = new Label {}
+	lazy val diceLabel = new Label {
+		visible = false
+	}
+
+	lazy val dice = new Rectangle {
+		x = -25
+		y = -25
+		height = 50
+		width = 50
+		fill = LIGHTGRAY
+	}
 
 	show {
 		List(
 			players,
 			activePlayer,
+			diceLabel,
 			dice
 		)
 	}
@@ -44,6 +59,36 @@ class GameView(presenter: GamePresenter) extends AbstractScene {
 	}
 
 	def dice(number: Int) {
-		dice.text = "Es wurde eine " + number + " gewürfelt."
+		diceLabel.text = "Es wurde eine " + number + " gewürfelt."
+
+		new SequentialTransition {
+			children = Seq(
+				new ParallelTransition {
+					node = dice
+					children = Seq(
+						new TranslateTransition {
+							duration = (2 s)
+							cycleCount = 1
+							fromX = -100
+							toX = 500
+						},
+						new RotateTransition {
+							duration = (2 s)
+							cycleCount = 1
+							byAngle = 180
+						}
+					)
+					onFinished = (event: ActionEvent) => {
+						diceLabel.visible = true
+					}
+				},
+				new FadeTransition {
+					node = diceLabel
+					fromValue = 0
+					toValue = 1
+					duration = (2 s)
+				}
+			)
+		}.play
 	}
 }
