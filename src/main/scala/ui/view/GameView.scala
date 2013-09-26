@@ -18,6 +18,8 @@ import scalafx.animation.ParallelTransition
 import scalafx.animation.FadeTransition
 import scalafx.scene.text.Text
 import scalafx.event.ActionEvent
+import scalafx.scene.Group
+import scalafx.scene.shape.Circle
 
 class GameView(presenter: GamePresenter) extends AbstractScene {
 
@@ -37,12 +39,68 @@ class GameView(presenter: GamePresenter) extends AbstractScene {
 		fill = LIGHTGRAY
 	}
 
+	lazy val gameField = new Group {
+
+		val gameFieldRange = 25
+
+		val x = 0
+		val y = 0
+
+		val playerColors = Seq(BLUE, GREEN, YELLOW, RED)
+
+		children = gameFields ++ startFields ++ homeFields
+
+		lazy val gameFields = Set(
+			1 to 3 map (i => gameField(x, y + i * gameFieldRange)),
+			0 to 3 map (i => gameField(x + i * gameFieldRange, y + 4 * gameFieldRange)),
+			0 to 1 map (i => gameField(x + 4 * gameFieldRange, y + 4 * gameFieldRange + i * gameFieldRange)),
+			1 to 3 map (i => gameField(x + 4 * gameFieldRange - i * gameFieldRange, y + 6 * gameFieldRange)),
+			0 to 3 map (i => gameField(x, y + 6 * gameFieldRange + i * gameFieldRange)),
+			0 to 1 map (i => gameField(x - i * gameFieldRange, y + 10 * gameFieldRange)),
+			1 to 3 map (i => gameField(x - 2 * gameFieldRange, y + 10 * gameFieldRange - i * gameFieldRange)),
+			0 to 3 map (i => gameField(x - 2 * gameFieldRange - i * gameFieldRange, y + 6 * gameFieldRange)),
+			0 to 1 map (i => gameField(x - 6 * gameFieldRange, y + 6 * gameFieldRange - i * gameFieldRange)),
+			1 to 3 map (i => gameField(x - 6 * gameFieldRange + i * gameFieldRange, y + 4 * gameFieldRange)),
+			0 to 3 map (i => gameField(x - 2 * gameFieldRange, y + 4 * gameFieldRange - i * gameFieldRange)),
+			0 to 1 map (i => gameField(x - 2 * gameFieldRange + i * gameFieldRange, y))
+		).flatten
+
+		lazy val startFields = Seq(
+			playerField(x, y, playerColors(0)),
+			playerField(x + 4 * gameFieldRange, y + 6 * gameFieldRange, playerColors(1)),
+			playerField(x - 2 * gameFieldRange, y + 10 * gameFieldRange, playerColors(2)),
+			playerField(x - 6 * gameFieldRange, y + 4 * gameFieldRange, playerColors(3))
+		)
+
+		lazy val homeFields = Seq(
+			1 to 4 map (i => homeField(x - 1 * gameFieldRange, y + i * gameFieldRange, playerColors(0))),
+			1 to 4 map (i => homeField(x + 4 * gameFieldRange - i * gameFieldRange, y + 5 * gameFieldRange, playerColors(1))),
+			1 to 4 map (i => homeField(x - 1 * gameFieldRange, y + 10 * gameFieldRange - i * gameFieldRange, playerColors(2))),
+			1 to 4 map (i => homeField(x - 6 * gameFieldRange + i * gameFieldRange, y + 5 * gameFieldRange, playerColors(3)))
+		).flatten
+
+		def gameField(x: Int, y: Int) = field(x, y)
+
+		def playerField(x: Int, y: Int, playerColor: Color) = field(x, y, playerColor)
+
+		def homeField(x: Int, y: Int, playerColor: Color) = field(x, y, playerColor, GRAY)
+
+		def field(x: Int, y: Int, fillColor: Color = WHITE, strokeColor: Color = BLACK): Circle = new Circle {
+			centerX = x
+			centerY = y
+			radius = 10
+			fill = fillColor
+			stroke = strokeColor
+		}
+	}
+
 	show {
 		List(
 			players,
 			activePlayer,
 			diceLabel,
-			dice
+			dice,
+			gameField
 		)
 	}
 
