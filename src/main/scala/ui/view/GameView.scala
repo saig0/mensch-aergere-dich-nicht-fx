@@ -21,6 +21,8 @@ import scalafx.event.ActionEvent
 import scalafx.scene.Group
 import scalafx.scene.shape.Circle
 import scalafx.geometry.Pos._
+import scalafx.scene.text.Font
+import scalafx.scene.text.FontWeight
 
 class GameView(presenter: GamePresenter) extends AbstractScene {
 

@@ -7,7 +7,7 @@ import scalafx.scene.paint.Color._
 
 class GameField {
 
-	val gameFieldRange = 25
+	val gameFieldRange = 35
 
 	val playerColors = Seq(BLUE, GREEN, YELLOW, RED)
 
@@ -49,7 +49,7 @@ class GameField {
 	private def field(x: Int, y: Int, fillColor: Color = WHITE, strokeColor: Color = BLACK): Circle = new Circle {
 		centerX = x
 		centerY = y
-		radius = 10
+		radius = 15
 		fill = fillColor
 		stroke = strokeColor
 	}
