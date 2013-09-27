@@ -27,44 +27,7 @@ class GameView(presenter: GamePresenter) extends AbstractScene {
 
 	lazy val activePlayer = new Label {}
 
-	lazy val diceLabel = new Label {
-		visible = false
-	}
-
-	lazy val dice = new Group {
-		visible = false
-
-		children = Seq(cube) ++ points.flatten
-
-		lazy val cube = new Rectangle {
-			x = -25
-			y = -25
-			height = 50
-			width = 50
-			fill = LIGHTGRAY
-		}
-
-		lazy val points = Seq(
-			Seq(point(0, 0)),
-			Seq(point(-10, -10), point(10, 10)),
-			Seq(point(-10, -10), point(0, 0), point(10, 10)),
-			Seq(point(-10, -10), point(-10, 10), point(10, -10), point(10, 10)),
-			Seq(point(-10, -10), point(-10, 10), point(0, 0), point(10, -10), point(10, 10)),
-			Seq(point(-10, -10), point(-10, 0), point(-10, 10), point(10, -10), point(10, 0), point(10, 10))
-		)
-
-		def point(x: Int, y: Int) = new Circle {
-			centerX = x
-			centerY = y
-			radius = 5
-			fill = WHITE
-			visible = false
-		}
-
-		def number(number: Int) {
-			points map (s => s map (_.visible = s.size == number))
-		}
-	}
+	lazy val dice = new Dice
 
 	lazy val gameField = new Group {
 
@@ -125,8 +88,7 @@ class GameView(presenter: GamePresenter) extends AbstractScene {
 		List(
 			players,
 			activePlayer,
-			diceLabel,
-			dice,
+			dice.view,
 			gameField
 		)
 	}
@@ -144,44 +106,6 @@ class GameView(presenter: GamePresenter) extends AbstractScene {
 	}
 
 	def dice(number: Int) {
-		diceLabel.text = "Es wurde eine " + number + " gewürfelt."
-
-		dice.number(number)
-		dice.visible = true
-
-		new SequentialTransition {
-			children = Seq(
-				new ParallelTransition {
-					node = dice
-					children = Seq(
-						new FadeTransition {
-							fromValue = 0
-							toValue = 1
-							duration = (0.5 s)
-						},
-						new TranslateTransition {
-							duration = (2 s)
-							cycleCount = 1
-							fromX = -300
-							toX = 300
-						},
-						new RotateTransition {
-							duration = (2 s)
-							cycleCount = 1
-							byAngle = 180
-						}
-					)
-					onFinished = (event: ActionEvent) => {
-						diceLabel.visible = true
-					}
-				},
-				new FadeTransition {
-					node = diceLabel
-					fromValue = 0
-					toValue = 1
-					duration = (2 s)
-				}
-			)
-		}.play
+		dice.roll(number)
 	}
 }
