@@ -58,7 +58,7 @@ object Main extends JFXApp {
 	stage = new JFXApp.PrimaryStage {
 		title = "Mensch-Ärgere-Dich-Nicht-FX"
 		width = 1200
-		height = 800
+		height = 900
 
 		centerOnScreen
 

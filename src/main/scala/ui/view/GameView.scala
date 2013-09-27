@@ -23,6 +23,7 @@ import scalafx.scene.shape.Circle
 import scalafx.geometry.Pos._
 import scalafx.scene.text.Font
 import scalafx.scene.text.FontWeight
+import scalafx.scene.shape.Polygon
 
 class GameView(presenter: GamePresenter) extends AbstractScene {
 
