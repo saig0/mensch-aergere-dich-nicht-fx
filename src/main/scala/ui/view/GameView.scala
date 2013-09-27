@@ -20,27 +20,45 @@ import scalafx.scene.text.Text
 import scalafx.event.ActionEvent
 import scalafx.scene.Group
 import scalafx.scene.shape.Circle
+import scalafx.geometry.Pos._
 
 class GameView(presenter: GamePresenter) extends AbstractScene {
 
-	lazy val players = new Label {}
+	lazy val players = 0 to 3 map (_ => new Label)
 
 	lazy val activePlayer = new Label {}
 
 	lazy val dice = new Dice
 	lazy val gameField = new GameField
 
-	show {
-		List(
-			players,
-			activePlayer,
-			dice.view,
-			gameField.view
+	lazy val gameFieldWithPlayerNames = new VBox {
+		alignment = CENTER
+		spacing = 10
+		content = Seq(
+			players(2),
+			new HBox {
+				alignment = CENTER
+				spacing = 10
+				content = Seq(
+					players(1),
+					gameField.view,
+					players(3)
+				)
+			},
+			players(0)
 		)
 	}
 
-	def players(p: List[Player]) {
-		players.text = "Spieler: " + p.map(_.name).mkString(", ")
+	show {
+		List(
+			activePlayer,
+			dice.view,
+			gameFieldWithPlayerNames
+		)
+	}
+
+	def players(player: List[Player]) {
+		0 to 3 map (i => players(i).text = player(i).name)
 	}
 
 	def yourTurn(player: Player) {
