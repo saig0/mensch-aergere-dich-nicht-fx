@@ -4,6 +4,9 @@ import scalafx.scene.Group
 import scalafx.scene.shape._
 import scalafx.scene.paint.Color
 import scalafx.scene.paint.Color._
+import model.Player
+import game._
+import scalafx.scene.Node
 
 class GameField {
 
@@ -55,8 +58,7 @@ class GameField {
 	}
 
 	lazy val view = new Group {
-		children = gameFields ++ startFields ++ homeFields ++ Seq(
-			figure(0, 0, YELLOW), figure(0, 35, RED), figure(-35, 0, GREEN))
+		children = gameFields ++ startFields ++ homeFields
 	}
 
 	private def figure(x: Int, y: Int, color: Color) = new Group {
@@ -85,5 +87,34 @@ class GameField {
 			body,
 			head
 		)
+	}
+
+	var figures = Map[(Player, Figure), Node]()
+
+	val playerStartPool = Seq(
+		(3, 1),
+		(3, 9),
+		(-6, 9),
+		(-6, 1)
+	)
+
+	def showGame(game: Game) {
+		0 to 3 map { p =>
+			game.gameStates(p) match {
+				case (player, gameState) =>
+					gameState.figures map { f =>
+						f.position match {
+							case Start(position) => {
+								val n = figure((playerStartPool(p)._1 + (position % 2)) * gameFieldRange, (playerStartPool(p)._2 + (position / 2)) * gameFieldRange, playerColors(p))
+								figures += (player -> f) -> n
+							}
+							case Field(position) =>
+							case Home(position) =>
+						}
+					}
+			}
+		}
+
+		figures map { case (_, figure) => view.children.add(figure) }
 	}
 }

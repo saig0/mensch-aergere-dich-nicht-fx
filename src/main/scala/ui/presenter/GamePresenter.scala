@@ -7,6 +7,8 @@ import ui.ClientEvent
 import ui.NewTurn
 import model.Player
 import ui.NewTurn
+import game.Game
+import game.Figure
 
 class GamePresenter extends Presenter[GameView] {
 
@@ -18,11 +20,15 @@ class GamePresenter extends Presenter[GameView] {
 
 	var selfPlayer: Player = _
 
+	var game: Game = _
+
 	def onStart = {
 		case GoToGame(players, self) => {
 			this.selfPlayer = self
+			game = Game(players)
 			updateUi {
 				view.players(players)
+				view.showGame(game)
 			}
 		}
 	}

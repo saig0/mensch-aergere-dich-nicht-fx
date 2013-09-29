@@ -24,6 +24,8 @@ import scalafx.geometry.Pos._
 import scalafx.scene.text.Font
 import scalafx.scene.text.FontWeight
 import scalafx.scene.shape.Polygon
+import game.Figure
+import game.Game
 
 class GameView(presenter: GamePresenter) extends AbstractScene {
 
@@ -38,17 +40,17 @@ class GameView(presenter: GamePresenter) extends AbstractScene {
 		alignment = CENTER
 		spacing = 10
 		content = Seq(
-			players(2),
+			players(0),
 			new HBox {
 				alignment = CENTER
 				spacing = 10
 				content = Seq(
-					players(1),
+					players(3),
 					gameField.view,
-					players(3)
+					players(1)
 				)
 			},
-			players(0)
+			players(2)
 		)
 	}
 
@@ -74,5 +76,9 @@ class GameView(presenter: GamePresenter) extends AbstractScene {
 
 	def dice(number: Int) {
 		dice.roll(number)
+	}
+
+	def showGame(game: Game) {
+		gameField.showGame(game)
 	}
 }
