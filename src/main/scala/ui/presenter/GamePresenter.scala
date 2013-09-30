@@ -9,6 +9,7 @@ import model.Player
 import ui.NewTurn
 import game.Game
 import game.Figure
+import game.Field
 
 class GamePresenter extends Presenter[GameView] {
 
@@ -35,12 +36,14 @@ class GamePresenter extends Presenter[GameView] {
 
 	def on = {
 		case NewTurn(player, number) if (player == selfPlayer) => {
+			lastDiceNumber = Some(number)
 			updateUi {
 				view.yourTurn(player)
 				view.dice(number)
 			}
 		}
 		case NewTurn(player, number) => {
+			lastDiceNumber = None
 			updateUi {
 				view.newTurn(player)
 				view.dice(number)
@@ -49,4 +52,12 @@ class GamePresenter extends Presenter[GameView] {
 	}
 
 	def onEnd {}
+
+	var lastDiceNumber: Option[Int] = None
+
+	def previewFigure(player: Player, figure: Figure) {
+		if (player == selfPlayer) {
+			lastDiceNumber map (dice => view.previewPosition(game.nextPosition(player, figure, dice)))
+		}
+	}
 }

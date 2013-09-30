@@ -7,8 +7,11 @@ import scalafx.scene.paint.Color._
 import model.Player
 import game._
 import scalafx.scene.Node
+import javafx.scene.input.MouseEvent
+import ui.view.ScalaFxView.actionDsl
+import ui.presenter.GamePresenter
 
-class GameField {
+class GameField(presenter: GamePresenter) {
 
 	val gameFieldRange = 35
 
@@ -105,8 +108,14 @@ class GameField {
 					gameState.figures map { f =>
 						f.position match {
 							case Start(position) => {
-								val n = figure((playerStartPool(p)._1 + (position % 2)) * gameFieldRange, (playerStartPool(p)._2 + (position / 2)) * gameFieldRange, playerColors(p))
-								figures += (player -> f) -> n
+								val playerFigure = figure((playerStartPool(p)._1 + (position % 2)) * gameFieldRange, (playerStartPool(p)._2 + (position / 2)) * gameFieldRange, playerColors(p))
+								playerFigure onMouseEntered = (_: MouseEvent) => presenter.previewFigure(player, f)
+								playerFigure onMouseExited = {
+									(_: MouseEvent) =>
+										previewFields foreach (_.stroke = BLACK)
+										previewFields = Nil
+								}
+								figures += (player -> f) -> playerFigure
 							}
 							case Field(position) =>
 							case Home(position) =>
@@ -116,5 +125,20 @@ class GameField {
 		}
 
 		figures map { case (_, figure) => view.children.add(figure) }
+	}
+
+	var previewFields = List[Circle]()
+
+	private def previewField(field: Circle) {
+		previewFields ::= field
+		field stroke = RED
+	}
+
+	def previewPosition(position: Position) {
+		position match {
+			case Start(pos) =>
+			case Field(pos) => previewField(gameFields(pos))
+			case Home(pos) =>
+		}
 	}
 }

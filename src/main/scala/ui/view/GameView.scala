@@ -26,6 +26,7 @@ import scalafx.scene.text.FontWeight
 import scalafx.scene.shape.Polygon
 import game.Figure
 import game.Game
+import game.Position
 
 class GameView(presenter: GamePresenter) extends AbstractScene {
 
@@ -34,7 +35,7 @@ class GameView(presenter: GamePresenter) extends AbstractScene {
 	lazy val activePlayer = new Label {}
 
 	lazy val dice = new Dice
-	lazy val gameField = new GameField
+	lazy val gameField = new GameField(presenter)
 
 	lazy val gameFieldWithPlayerNames = new VBox {
 		alignment = CENTER
@@ -80,5 +81,9 @@ class GameView(presenter: GamePresenter) extends AbstractScene {
 
 	def showGame(game: Game) {
 		gameField.showGame(game)
+	}
+
+	def previewPosition(position: Position) {
+		gameField.previewPosition(position)
 	}
 }

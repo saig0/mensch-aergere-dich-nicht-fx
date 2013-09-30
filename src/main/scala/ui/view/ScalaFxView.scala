@@ -7,7 +7,15 @@ import java.util.LinkedList
 import javafx.collections.FXCollections
 import scalafx.scene.control.TableColumn
 import scalafx.beans.property.ObjectProperty
-import scalafx.scene.Node
+
+object ScalaFxView {
+	implicit def actionDsl[T <: Event](f: T => Unit): EventHandler[T] =
+		new EventHandler[T] {
+			def handle(event: T) {
+				f(event)
+			}
+		}
+}
 
 trait ScalaFxView {
 

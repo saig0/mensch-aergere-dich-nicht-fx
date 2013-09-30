@@ -4,6 +4,15 @@ import model.Player
 
 case class Game(players: List[Player]) {
 	val gameStates = players map (player => player -> GameState())
+
+	def nextPosition(player: Player, figure: Figure, dice: Int): Position = {
+		// Implementieren
+		figure.position match {
+			case Start(_) => Field(dice)
+			case Field(pos) => Field(pos + dice)
+			case Home(pos) => Home(pos)
+		}
+	}
 }
 
 case class GameState {
