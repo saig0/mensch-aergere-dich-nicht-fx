@@ -5,7 +5,10 @@ import model.Player
 case class Game(players: List[Player]) {
 	val gameStates = players map (player => player -> GameState())
 
-	def nextPosition(player: Player, figure: Figure, dice: Int): Position = {
+	def nextPositions(player: Player, figure: Figure, dice: Int): List[Position] =
+		1 to dice map (nextPosition(player, figure, _)) toList
+
+	private def nextPosition(player: Player, figure: Figure, dice: Int): Position = {
 		// Implementieren
 		figure.position match {
 			case Start(_) => Field(dice)

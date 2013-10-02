@@ -83,7 +83,7 @@ class GameView(presenter: GamePresenter) extends AbstractScene {
 		gameField.showGame(game)
 	}
 
-	def previewPosition(position: Position) {
-		gameField.previewPosition(position)
+	def previewPositions(positions: List[Position]) {
+		gameField.previewPositions(positions)
 	}
 }

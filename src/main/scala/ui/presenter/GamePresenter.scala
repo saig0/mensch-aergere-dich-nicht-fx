@@ -57,7 +57,7 @@ class GamePresenter extends Presenter[GameView] {
 
 	def previewFigure(player: Player, figure: Figure) {
 		if (player == selfPlayer) {
-			lastDiceNumber map (dice => view.previewPosition(game.nextPosition(player, figure, dice)))
+			lastDiceNumber map (dice => view.previewPositions(game.nextPositions(player, figure, dice)))
 		}
 	}
 }

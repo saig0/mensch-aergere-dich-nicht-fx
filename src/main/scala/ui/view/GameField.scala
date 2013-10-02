@@ -18,26 +18,23 @@ class GameField(presenter: GamePresenter) {
 	val playerColors = Seq(BLUE, GREEN, YELLOW, RED)
 
 	lazy val gameFields = Seq(
+		Seq(playerField(0, 0, playerColors(0))),
 		1 to 3 map (i => gameField(0, i * gameFieldRange)),
 		0 to 3 map (i => gameField(i * gameFieldRange, 4 * gameFieldRange)),
 		0 to 1 map (i => gameField(4 * gameFieldRange, 4 * gameFieldRange + i * gameFieldRange)),
+		Seq(playerField(4 * gameFieldRange, 6 * gameFieldRange, playerColors(1))),
 		1 to 3 map (i => gameField(4 * gameFieldRange - i * gameFieldRange, 6 * gameFieldRange)),
 		0 to 3 map (i => gameField(0, 6 * gameFieldRange + i * gameFieldRange)),
 		0 to 1 map (i => gameField(-i * gameFieldRange, 10 * gameFieldRange)),
+		Seq(playerField(-2 * gameFieldRange, 10 * gameFieldRange, playerColors(2))),
 		1 to 3 map (i => gameField(-2 * gameFieldRange, 10 * gameFieldRange - i * gameFieldRange)),
 		0 to 3 map (i => gameField(-2 * gameFieldRange - i * gameFieldRange, 6 * gameFieldRange)),
 		0 to 1 map (i => gameField(-6 * gameFieldRange, 6 * gameFieldRange - i * gameFieldRange)),
+		Seq(playerField(-6 * gameFieldRange, 4 * gameFieldRange, playerColors(3))),
 		1 to 3 map (i => gameField(-6 * gameFieldRange + i * gameFieldRange, 4 * gameFieldRange)),
 		0 to 3 map (i => gameField(-2 * gameFieldRange, 4 * gameFieldRange - i * gameFieldRange)),
 		0 to 1 map (i => gameField(-2 * gameFieldRange + i * gameFieldRange, 0))
 	).flatten
-
-	lazy val startFields = Seq(
-		playerField(0, 0, playerColors(0)),
-		playerField(4 * gameFieldRange, 6 * gameFieldRange, playerColors(1)),
-		playerField(-2 * gameFieldRange, 10 * gameFieldRange, playerColors(2)),
-		playerField(-6 * gameFieldRange, 4 * gameFieldRange, playerColors(3))
-	)
 
 	lazy val homeFields = Seq(
 		1 to 4 map (i => homeField(-1 * gameFieldRange, i * gameFieldRange, playerColors(0))),
@@ -61,7 +58,7 @@ class GameField(presenter: GamePresenter) {
 	}
 
 	lazy val view = new Group {
-		children = gameFields ++ startFields ++ homeFields
+		children = gameFields ++ homeFields
 	}
 
 	private def figure(x: Int, y: Int, color: Color) = new Group {
@@ -134,10 +131,14 @@ class GameField(presenter: GamePresenter) {
 		field stroke = RED
 	}
 
-	def previewPosition(position: Position) {
+	def previewPositions(positions: List[Position]) {
+		positions map previewPosition
+	}
+
+	private def previewPosition(position: Position) {
 		position match {
 			case Start(pos) =>
-			case Field(pos) => previewField(gameFields(pos))
+			case Field(pos) => previewField(gameFields(pos - 1))
 			case Home(pos) =>
 		}
 	}
