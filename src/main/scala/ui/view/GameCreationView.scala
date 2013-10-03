@@ -105,7 +105,6 @@ class GameCreationView(presenter: GameCreationPresenter) extends AbstractScene {
 		playersLabel.text = "Spieler: " + data.size + " / " + game.maxPlayers
 		startGameButton.disable = data.size < game.maxPlayers
 		addCpuPlayerButton.disable = data.size >= game.maxPlayers
-
 	}
 
 	def selectedPlayer = table.getSelectionModel.getSelectedItem

@@ -57,8 +57,8 @@ class ClientServer extends Actor with ActorLogging {
 			}
 			Thread.sleep(1000)
 
-			val number = 1 + Math.random * 5
-			val turn = NewTurn(players.head, number.toInt)
+			val number = Math.round(1 + Math.random * 5).toInt
+			val turn = NewTurn(players.head, number)
 			sendAll { _ => turn }
 		}
 		case x => println("receive on server " + x)

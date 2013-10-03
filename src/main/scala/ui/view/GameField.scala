@@ -38,12 +38,14 @@ class GameField(presenter: GamePresenter) {
 		0 to 1 map (i => gameField(-2 * gameFieldRange + i * gameFieldRange, 0))
 	).flatten
 
-	lazy val homeFields = Seq(
-		1 to 4 map (i => homeField(-1 * gameFieldRange, i * gameFieldRange, playerColors(0))),
-		1 to 4 map (i => homeField(4 * gameFieldRange - i * gameFieldRange, 5 * gameFieldRange, playerColors(1))),
-		1 to 4 map (i => homeField(-1 * gameFieldRange, 10 * gameFieldRange - i * gameFieldRange, playerColors(2))),
-		1 to 4 map (i => homeField(-6 * gameFieldRange + i * gameFieldRange, 5 * gameFieldRange, playerColors(3)))
-	).flatten
+	var homeFields = Map[Player, Seq[Circle]]()
+
+	private def homeFields(players: List[Player]) = Map(
+		players(0) -> (1 to 4).map(i => homeField(-1 * gameFieldRange, i * gameFieldRange, playerColors(0))),
+		players(1) -> (1 to 4).map(i => homeField(4 * gameFieldRange - i * gameFieldRange, 5 * gameFieldRange, playerColors(1))),
+		players(2) -> (1 to 4).map(i => homeField(-1 * gameFieldRange, 10 * gameFieldRange - i * gameFieldRange, playerColors(2))),
+		players(3) -> (1 to 4).map(i => homeField(-6 * gameFieldRange + i * gameFieldRange, 5 * gameFieldRange, playerColors(3)))
+	)
 
 	private def gameField(x: Int, y: Int) = field(x, y)
 
@@ -60,7 +62,7 @@ class GameField(presenter: GamePresenter) {
 	}
 
 	lazy val view = new Group {
-		children = gameFields ++ homeFields
+		children = gameFields
 	}
 
 	def removePreviewFigure {
@@ -82,6 +84,9 @@ class GameField(presenter: GamePresenter) {
 	var figures = Set[PlayerFigure]()
 
 	def showGame(game: Game) {
+		homeFields = homeFields(game.gameStates map (_._1))
+		homeFields.map(_._2).flatten.foreach(homeField => view.children.add(homeField))
+
 		0 to 3 map { p =>
 			game.gameStates(p) match {
 				case (player, gameState) =>
@@ -96,22 +101,21 @@ class GameField(presenter: GamePresenter) {
 					}
 			}
 		}
-
 		figures map { figure => view.children.add(figure.view) }
 	}
 
 	var previewFields = List[Circle]()
 
-	def previewPositions(positions: List[Position]) {
-		val fields = positions map fieldOfPosition
+	def previewPositions(player: Player, positions: List[Position]) {
+		val fields = positions map (pos => fieldOfPosition(player, pos))
 		fields map (_.stroke = RED)
 		previewFields = fields
 	}
 
-	private def fieldOfPosition(position: Position): Circle = {
+	private def fieldOfPosition(player: Player, position: Position): Circle = {
 		position match {
 			case Field(pos) => gameFields(pos - 1)
-			case Home(pos) => homeFields(0)
+			case Home(pos) => homeFields(player)(pos - 1)
 		}
 	}
 
@@ -119,7 +123,7 @@ class GameField(presenter: GamePresenter) {
 		val playerFigure = figures filter (f => f.player == player && f.figure == figure) head
 		val moves = for {
 			pos <- movement
-			val field = fieldOfPosition(pos)
+			val field = fieldOfPosition(player, pos)
 		} yield (field.centerX.toDouble, field.centerY.toDouble)
 
 		playerFigure.move(moves)
