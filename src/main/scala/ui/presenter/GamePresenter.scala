@@ -61,6 +61,10 @@ class GamePresenter extends Presenter[GameView] {
 		}
 	}
 
+	def removePreviewFigure {
+		view.removePreviewFigure
+	}
+
 	def moveFigure(player: Player, figure: Figure) {
 		if (player == selfPlayer) {
 			lastDiceNumber map { dice =>

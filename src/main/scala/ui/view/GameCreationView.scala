@@ -20,6 +20,8 @@ import model.Game
 class GameCreationView(presenter: GameCreationPresenter) extends AbstractScene {
 
 	private lazy val table: TableView[Player] = new TableView[Player] {
+		maxHeight = 175
+
 		columns += new TableColumn[Player, String] {
 			text = "Spieler"
 			cellValueFactory = { _.value.name }
