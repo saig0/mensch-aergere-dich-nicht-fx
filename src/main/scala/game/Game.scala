@@ -24,7 +24,7 @@ case class GameState {
 	def getFigureOnStart = figures filter (_.position.isInstanceOf[Start]) headOption
 }
 
-case class Figure(position: Position)
+case class Figure(var position: Position)
 
 sealed trait Position
 

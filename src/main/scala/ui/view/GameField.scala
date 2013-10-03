@@ -10,6 +10,8 @@ import scalafx.scene.Node
 import javafx.scene.input.MouseEvent
 import ui.view.ScalaFxView.actionDsl
 import ui.presenter.GamePresenter
+import scalafx.animation._
+import scalafx.Includes._
 
 class GameField(presenter: GamePresenter) {
 
@@ -61,35 +63,48 @@ class GameField(presenter: GamePresenter) {
 		children = gameFields ++ homeFields
 	}
 
-	private def figure(x: Int, y: Int, color: Color) = new Group {
+	case class PlayerFigure(x: Int, y: Int, color: Color, player: Player, figure: Figure) {
 
-		def body = {
-			val body = Polygon(
-				x, y - 22,
-				x + 9, y,
-				x - 9, y)
-			body fill = color
-			body stroke = LIGHTGRAY
-			body strokeWidth = 2
-			body
+		lazy val view = new Group {
+			private def body = {
+				val body = Polygon(
+					x, y - 22,
+					x + 9, y,
+					x - 9, y)
+				body fill = color
+				body stroke = LIGHTGRAY
+				body strokeWidth = 2
+				body
+			}
+
+			private def head = new Circle {
+				centerX = x
+				centerY = y - 20
+				radius = 8
+				fill = color
+				stroke = LIGHTGRAY
+				strokeWidth = 2
+			}
+
+			children = Seq(
+				body,
+				head
+			)
+
+			onMouseEntered = (_: MouseEvent) => presenter.previewFigure(player, figure)
+
+			onMouseExited = {
+				(_: MouseEvent) =>
+					previewFields foreach (_.stroke = BLACK)
+					previewFields = Nil
+			}
+
+			onMouseClicked = (_: MouseEvent) => presenter.moveFigure(player, figure)
+
 		}
-
-		def head = new Circle {
-			centerX = x
-			centerY = y - 20
-			radius = 8
-			fill = color
-			stroke = LIGHTGRAY
-			strokeWidth = 2
-		}
-
-		children = Seq(
-			body,
-			head
-		)
 	}
 
-	var figures = Map[(Player, Figure), Node]()
+	var figures = Map[(Player, Figure), PlayerFigure]()
 
 	val playerStartPool = Seq(
 		(3, 1),
@@ -98,6 +113,10 @@ class GameField(presenter: GamePresenter) {
 		(-6, 1)
 	)
 
+	private def playerFigureCoordinates(p: Int, position: Int) =
+		((playerStartPool(p)._1 + (position % 2)) * gameFieldRange,
+			(playerStartPool(p)._2 + (position / 2)) * gameFieldRange)
+
 	def showGame(game: Game) {
 		0 to 3 map { p =>
 			game.gameStates(p) match {
@@ -105,41 +124,54 @@ class GameField(presenter: GamePresenter) {
 					gameState.figures map { f =>
 						f.position match {
 							case Start(position) => {
-								val playerFigure = figure((playerStartPool(p)._1 + (position % 2)) * gameFieldRange, (playerStartPool(p)._2 + (position / 2)) * gameFieldRange, playerColors(p))
-								playerFigure onMouseEntered = (_: MouseEvent) => presenter.previewFigure(player, f)
-								playerFigure onMouseExited = {
-									(_: MouseEvent) =>
-										previewFields foreach (_.stroke = BLACK)
-										previewFields = Nil
-								}
+								val c = playerFigureCoordinates(p, position)
+								val playerFigure = PlayerFigure(c._1, c._2, playerColors(p), player, f)
 								figures += (player -> f) -> playerFigure
 							}
-							case Field(position) =>
-							case Home(position) =>
 						}
 					}
 			}
 		}
 
-		figures map { case (_, figure) => view.children.add(figure) }
+		figures map { case (_, figure) => view.children.add(figure.view) }
 	}
 
 	var previewFields = List[Circle]()
 
-	private def previewField(field: Circle) {
-		previewFields ::= field
-		field stroke = RED
-	}
-
 	def previewPositions(positions: List[Position]) {
-		positions map previewPosition
+		val fields = positions map fieldOfPosition
+		fields map (_.stroke = RED)
+		previewFields = fields
 	}
 
-	private def previewPosition(position: Position) {
+	private def fieldOfPosition(position: Position): Circle = {
 		position match {
-			case Start(pos) =>
-			case Field(pos) => previewField(gameFields(pos - 1))
-			case Home(pos) =>
+			case Field(pos) => gameFields(pos - 1)
+			case Home(pos) => homeFields(0)
 		}
+	}
+
+	def moveFigure(player: Player, figure: Figure, movement: List[Position]) {
+		val playerFigure = figures(player -> figure)
+
+		new SequentialTransition {
+			node = playerFigure.view
+			children = movement map { pos =>
+				new TranslateTransition {
+					duration = (1 s)
+
+					toX = coordinates(pos)._1 - playerFigure.x
+					toY = coordinates(pos)._2 - playerFigure.y
+
+					def coordinates(position: Position) = {
+						val field = fieldOfPosition(position)
+						(field.centerX.toDouble, field.centerY.toDouble)
+					}
+				}
+			}
+		}.play
+
+		figures = figures filter (_._2 != playerFigure)
+		figures += (player -> figure.copy(position = movement.last)) -> playerFigure
 	}
 }

@@ -60,4 +60,15 @@ class GamePresenter extends Presenter[GameView] {
 			lastDiceNumber map (dice => view.previewPositions(game.nextPositions(player, figure, dice)))
 		}
 	}
+
+	def moveFigure(player: Player, figure: Figure) {
+		if (player == selfPlayer) {
+			lastDiceNumber map { dice =>
+				// event an server schicken (player, figure, dice)
+				val movement = game.nextPositions(player, figure, dice)
+				view.moveFigure(player, figure, movement)
+				figure.position = movement.last
+			}
+		}
+	}
 }

@@ -86,4 +86,8 @@ class GameView(presenter: GamePresenter) extends AbstractScene {
 	def previewPositions(positions: List[Position]) {
 		gameField.previewPositions(positions)
 	}
+
+	def moveFigure(player: Player, figure: Figure, movement: List[Position]) {
+		gameField.moveFigure(player, figure, movement)
+	}
 }
