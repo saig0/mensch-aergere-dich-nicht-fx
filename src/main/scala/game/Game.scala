@@ -3,7 +3,7 @@ package game
 import model.Player
 
 case class Game(players: List[Player]) {
-	val gameStates = players map (player => player -> GameState())
+	val gameStates = players map (player => player -> GameState()) toMap
 
 	val gameFieldCount = 40
 
@@ -24,6 +24,10 @@ case class Game(players: List[Player]) {
 			case Home(pos) if (pos + dice <= 4) => Home(pos + dice)
 			case p => p
 		}
+	}
+
+	def moveFigure(player: Player, figure: Figure, newPosition: Position) {
+		gameStates(player).figures filter (_ == figure) map (_.position = newPosition)
 	}
 }
 

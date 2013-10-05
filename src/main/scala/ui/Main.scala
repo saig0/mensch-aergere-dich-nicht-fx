@@ -26,6 +26,7 @@ import model.Player
 import communication.ClientServer
 import javafx.stage.WindowEvent
 import communication.Client
+import game.Figure
 
 trait ClientEvent
 
@@ -48,6 +49,8 @@ case class JoinPlayer(player: Player) extends ClientEvent
 case class StartGame(players: List[Player]) extends ClientEvent
 
 case class NewTurn(player: Player, number: Int) extends ClientEvent
+
+case class MoveFigure(player: Player, figure: Figure, number: Int) extends ClientEvent
 
 object Main extends JFXApp {
 

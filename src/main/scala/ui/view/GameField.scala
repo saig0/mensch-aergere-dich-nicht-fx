@@ -84,11 +84,11 @@ class GameField(presenter: GamePresenter) {
 	var figures = Set[PlayerFigure]()
 
 	def showGame(game: Game) {
-		homeFields = homeFields(game.gameStates map (_._1))
+		homeFields = homeFields(game.gameStates.toList.map(_._1))
 		homeFields.map(_._2).flatten.foreach(homeField => view.children.add(homeField))
 
 		0 to 3 map { p =>
-			game.gameStates(p) match {
+			game.gameStates.toList(p) match {
 				case (player, gameState) =>
 					gameState.figures map { f =>
 						f.position match {
@@ -127,5 +127,6 @@ class GameField(presenter: GamePresenter) {
 		} yield (field.centerX.toDouble, field.centerY.toDouble)
 
 		playerFigure.move(moves)
+		playerFigure.figure.position = movement.last
 	}
 }

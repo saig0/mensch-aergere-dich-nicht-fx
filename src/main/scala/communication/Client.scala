@@ -9,6 +9,7 @@ import akka.actor.ActorRef
 import ui.Main
 import model.Player
 import ui.JoinPlayer
+import game.Figure
 
 case class ClientMessage(x: Any)
 
@@ -24,8 +25,11 @@ object Client {
 		// löst eine Exception aus, wenn keine Verbindung aufgebaut werden kann
 		server ! ConnectedPlayer(player, actor)
 
+		this.client = actor
 		actor
 	}
+
+	var client: ActorRef = _
 }
 
 class Client(server: ActorRef) extends Actor with ActorLogging {
@@ -46,6 +50,12 @@ class Client(server: ActorRef) extends Actor with ActorLogging {
 		}
 		case event @ NewTurn(player, number) => {
 			Main.publish(ui.NewTurn(player, number))
+		}
+		case ui.MoveFigure(player, figure, number) => {
+			server ! MoveFigure(player, figure, number)
+		}
+		case MoveFigure(player, figure, number) => {
+			Main.publish(ui.MoveFigure(player, figure, number))
 		}
 		case x => println("receive on client " + x)
 	}

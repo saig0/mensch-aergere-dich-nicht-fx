@@ -13,7 +13,7 @@ import ui.presenter.GamePresenter
 import scalafx.animation._
 import scalafx.Includes._
 
-case class PlayerFigure(x: Int, y: Int, color: Color, player: Player, figure: Figure, presenter: GamePresenter) {
+case class PlayerFigure(x: Int, y: Int, color: Color, player: Player, var figure: Figure, presenter: GamePresenter) {
 
 	lazy val view = new Group {
 		private def body = {

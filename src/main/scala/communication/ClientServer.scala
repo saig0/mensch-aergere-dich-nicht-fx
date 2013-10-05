@@ -10,6 +10,7 @@ import akka.actor.ActorRef
 import ui.Main
 import ui.JoinPlayer
 import ui.EndEvent
+import game.Figure
 
 trait ServerEvent
 
@@ -20,6 +21,8 @@ case class DisconnectPlayer(player: Player) extends ServerEvent
 case class StartGame(players: List[Player]) extends ServerEvent
 
 case class NewTurn(player: Player, number: Int) extends ServerEvent
+
+case class MoveFigure(player: Player, figure: Figure, number: Int) extends ServerEvent
 
 object ClientServer {
 
@@ -61,10 +64,15 @@ class ClientServer extends Actor with ActorLogging {
 			val turn = NewTurn(players.head, number)
 			sendAll { _ => turn }
 		}
+		case event: MoveFigure => {
+			sendAll(_ => event)
+
+			// nächste Runde
+		}
 		case x => println("receive on server " + x)
 	}
 
-	def sendAll = (event: Player => Any) => {
+	private def sendAll = (event: Player => Any) => {
 		val players = connectedPlayers.keys.toList
 		connectedPlayers map {
 			case (player, actor) => {
