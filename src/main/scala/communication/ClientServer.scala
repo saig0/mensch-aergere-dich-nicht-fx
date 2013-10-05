@@ -42,6 +42,8 @@ class ClientServer extends Actor with ActorLogging {
 
 	var connectedPlayers = Map[Player, ActorRef]()
 
+	lazy val players = connectedPlayers.keys.toList
+
 	def receive = {
 		case ConnectedPlayer(player, actor) => {
 			connectedPlayers += (player -> actor)
@@ -54,22 +56,30 @@ class ClientServer extends Actor with ActorLogging {
 			connectedPlayers -= player
 		}
 		case StartGame => {
-			val players = connectedPlayers.keys.toList
 			sendAll { _ =>
 				StartGame(players)
 			}
 			Thread.sleep(1000)
-
-			val number = Math.round(1 + Math.random * 5).toInt
-			val turn = NewTurn(players.head, number)
-			sendAll { _ => turn }
+			newTurn(players.head)
 		}
-		case event: MoveFigure => {
+		case event @ MoveFigure(player, _, dice) => {
 			sendAll(_ => event)
-
 			// nächste Runde
+			Thread.sleep(dice * 1000)
+			newTurn(nextPlayer(player))
 		}
 		case x => println("receive on server " + x)
+	}
+
+	private def nextPlayer(player: Player) = {
+		val i = (players.indexOf(player) + 1) % players.size
+		players(i)
+	}
+
+	private def newTurn(player: Player) {
+		val number = Math.round(1 + Math.random * 5).toInt
+		val turn = NewTurn(player, number)
+		sendAll { _ => turn }
 	}
 
 	private def sendAll = (event: Player => Any) => {
