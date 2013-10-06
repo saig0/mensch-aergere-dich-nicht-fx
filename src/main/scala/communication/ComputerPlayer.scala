@@ -9,6 +9,7 @@ import akka.actor.ActorRef
 import ui.Main
 import ui.JoinPlayer
 import model.Player
+import game.Game
 
 object ComputerPlayer {
 
@@ -17,20 +18,37 @@ object ComputerPlayer {
 	def create = {
 		cpuPlayer += 1
 		val server = ClientServer.server
-		val actor = ClientServer.system.actorOf(Props(new ComputerPlayer(server)), "cpuPlayer_" + cpuPlayer)
 		val player = Player("CPU" + cpuPlayer)
+		val actor = ClientServer.system.actorOf(Props(new ComputerPlayer(server, player)), "cpuPlayer_" + cpuPlayer)
 		server ! ConnectedPlayer(player, actor)
 		actor
 	}
 }
 
-class ComputerPlayer(server: ActorRef) extends Actor with ActorLogging {
+class ComputerPlayer(server: ActorRef, cpuPlayer: Player) extends Actor with ActorLogging {
+
+	var game: Game = _
 
 	def receive = {
 		case DisconnectPlayer => {
-			println("disconnect cpu")
 			ComputerPlayer.cpuPlayer -= 1
 			Main.system.stop(self)
+		}
+		case StartGame(players) => {
+			game = Game(players)
+		}
+		case NewTurn(player, dice) => {
+			if (player == cpuPlayer) {
+				// warten bis Würfel fertig ist
+				Thread.sleep(2000)
+				// TODO: intelligentere Auswahl der Figur
+				val figure = game.gameStates(player).figures.head
+				server ! MoveFigure(player, figure, dice)
+			}
+		}
+		case MoveFigure(player, figure, dice) => {
+			val movement = game.nextPositions(player, figure, dice)
+			game.moveFigure(player, figure, movement.last)
 		}
 		case x => println("receive on cpu " + x)
 	}
