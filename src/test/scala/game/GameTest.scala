@@ -29,16 +29,16 @@ class GameTest extends FlatSpec with Matchers {
 
 	it should "go to home with 1 for player 1" in {
 		val game = new Game(players)
-		game.nextPositions(players(0), Figure(Field(40)), 1) should be(List(Home(0)))
+		game.nextPositions(players(0), Figure(Field(40)), 1) should be(List(Home(1)))
 	}
 
 	it should "go to home with 1 for player 2" in {
 		val game = new Game(players)
-		game.nextPositions(players(1), Figure(Field(10)), 1) should be(List(Home(0)))
+		game.nextPositions(players(1), Figure(Field(10)), 1) should be(List(Home(1)))
 	}
 
 	it should "go to home with 4 for player 1" in {
 		val game = new Game(players)
-		game.nextPositions(players(0), Figure(Field(40)), 4) should be(List(Home(0), Home(1), Home(2), Home(3)))
+		game.nextPositions(players(0), Figure(Field(40)), 4) should be(List(Home(1), Home(2), Home(3), Home(4)))
 	}
 }

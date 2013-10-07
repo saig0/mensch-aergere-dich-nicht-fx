@@ -115,7 +115,7 @@ class GameField(presenter: GamePresenter) {
 	private def fieldOfPosition(player: Player, position: Position): Circle = {
 		position match {
 			case Field(pos) => gameFields(pos - 1)
-			case Home(pos) => homeFields(player)(pos)
+			case Home(pos) => homeFields(player)(pos - 1)
 		}
 	}
 
