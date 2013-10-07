@@ -25,11 +25,11 @@ case class Game(players: List[Player]) {
 	private def nextPosition(player: Player, figure: Figure, dice: Int): Position = {
 		figure.position match {
 			case Start(_) => Field(startPositions(player) % gameFieldCount + dice) // nur mit einer 6 starten
-			case Field(pos) if (pos + dice <= startPositions(player)) => {
+			case Field(pos) if (pos > startPositions(player) || pos + dice <= startPositions(player)) => {
 				if (pos + dice == gameFieldCount) Field(gameFieldCount)
 				else Field((pos + dice) % gameFieldCount)
 			}
-			case Field(pos) if (pos + dice > startPositions(player) && pos + dice - startPositions(player) <= 4) => Home(pos + dice - startPositions(player))
+			case Field(pos) if (pos + dice - startPositions(player) <= 4) => Home(pos + dice - startPositions(player))
 			case Home(pos) if (pos + dice <= 4) => Home(pos + dice)
 			case p => p
 		}
