@@ -18,6 +18,10 @@ libraryDependencies ++= Seq(
   "com.typesafe.akka" %% "akka-remote" % "2.1.2"
  )
  
+libraryDependencies += "org.scalatest" % "scalatest_2.10" % "1.9.2" % "test"
+
+libraryDependencies += "junit" % "junit" % "4.11" % "test"
+ 
 jfxSettings
 
 JFX.mainClass := Some("ui.Main")

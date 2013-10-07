@@ -1,10 +1,9 @@
-package test
+package rest
 
 import dispatch._
-import Defaults._
+import dispatch.Defaults._
 import net.liftweb.json._
 import net.liftweb.json.Serialization._
-import model.Game
 import rest.GameServerClient
 
 object RestDemo {

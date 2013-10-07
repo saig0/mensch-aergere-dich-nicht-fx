@@ -12,8 +12,11 @@ case class Game(players: List[Player]) {
 	val gameStates = players map (player => player -> GameState()) toMap
 
 	private def startPositions(player: Player) = {
-		val pos = (players indexOf player) * 10
-		pos + gameFieldCount
+		val pos = (players indexOf player) match {
+			case 0 => gameFieldCount
+			case i => i * 10
+		}
+		pos + 1
 	}
 
 	def nextPositions(player: Player, figure: Figure, dice: Int): List[Position] =
@@ -23,13 +26,13 @@ case class Game(players: List[Player]) {
 	// TODO: Berechnung je nach Startposition von Spieler	
 	private def nextPosition(player: Player, figure: Figure, dice: Int): Position = {
 		figure.position match {
-			case Start(_) => Field(startPositions(player) % gameFieldCount + dice) // nur mit einer 6 starten
-			case Field(pos) if (pos + dice <= startPositions(player)) => { // nur Spieler 1 kommt ins Ziel
+			case Start(_) => Field(startPositions(player) % gameFieldCount) // nur mit einer 6 starten
+			case Field(pos) if (pos + dice < startPositions(player)) => { // nur Spieler 1 kommt ins Ziel
 				if (pos + dice == gameFieldCount) Field(gameFieldCount)
 				else Field((pos + dice) % gameFieldCount)
 			}
-			case Field(pos) if (pos + dice > startPositions(player)) => Home(pos + dice - startPositions(player))
-			case Home(pos) if (pos + dice <= 4) => Home(pos + dice)
+			case Field(pos) if (pos + dice >= startPositions(player)) => Home(pos + dice - startPositions(player))
+			case Home(pos) if (pos + dice <= 3) => Home(pos + dice)
 			case p => p
 		}
 	}
@@ -54,7 +57,7 @@ case class Field(field: Int) extends Position {
 }
 
 case class Home(field: Int) extends Position {
-	require(field >= 1 && field <= 4)
+	require(field >= 0 && field <= 3)
 }
 
 case class Start(field: Int) extends Position {

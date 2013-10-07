@@ -1,11 +1,12 @@
-package test
+package scalafx
 
 import scalafx.Includes._
 import scalafx.application.JFXApp
 import scalafx.scene.Scene
 import scalafx.scene.paint.Color
 import scalafx.scene.shape.Rectangle
-import scalafx.stage.Stage
+import scalafx.beans.property.ReadOnlyBooleanProperty.sfxReadOnlyBooleanProperty2jfx
+import scalafx.scene.paint.Color.sfxColor2jfx
 
 object ScalaFxDemo extends JFXApp {
 	stage = new JFXApp.PrimaryStage {
