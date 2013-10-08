@@ -81,7 +81,8 @@ class GamePresenter extends Presenter[GameView] {
 	def moveFigure(player: Player, figure: Figure) {
 		if (player == selfPlayer) {
 			lastDiceNumber map { dice =>
-				client ! MoveFigure(player, figure, dice)
+				game.nextPositions(player, figure, dice) map (_ =>
+					client ! MoveFigure(player, figure, dice))
 			}
 		}
 	}
