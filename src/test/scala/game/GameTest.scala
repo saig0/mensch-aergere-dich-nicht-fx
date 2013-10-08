@@ -65,12 +65,23 @@ class GameTest extends FlatSpec with Matchers {
 		game.nextPositions(player1, Figure(Field(1)), 2) should be(None)
 	}
 
-	it should " move to field with a figure of other player" in {
+	it should "move to field with a figure of other player" in {
 		val game = new Game(players)
 		val player1 = players(0)
 		val player2 = players(1)
 		val figure1 = game.gameStates(player1).figures(0)
 		game.moveFigure(player1, figure1, Field(3))
 		game.nextPositions(player2, Figure(Field(1)), 2) should be(Some(List(Field(2), Field(3))))
+	}
+
+	"A move of a figure" should "change the game state" in {
+		val game = new Game(players)
+		val player = players(0)
+		val figure = game.gameStates(player).figures(0)
+		figure.position should be(Start(0))
+
+		val newPosition = Field(1)
+		game.moveFigure(player, figure, newPosition)
+		figure.position should be(newPosition)
 	}
 }
