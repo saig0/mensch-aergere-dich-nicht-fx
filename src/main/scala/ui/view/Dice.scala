@@ -31,7 +31,7 @@ class Dice {
 		Seq(point(-10, -10), point(0, 0), point(10, 10)),
 		Seq(point(-10, -10), point(-10, 10), point(10, -10), point(10, 10)),
 		Seq(point(-10, -10), point(-10, 10), point(0, 0), point(10, -10), point(10, 10)),
-		Seq(point(-10, -10), point(-10, 0), point(-10, 10), point(10, -10), point(10, 0), point(10, 10))
+		Seq(point(-10, -12), point(-10, 0), point(-10, 12), point(10, -12), point(10, 0), point(10, 12))
 	)
 
 	private def point(x: Int, y: Int) = new Circle {

@@ -54,9 +54,10 @@ class GamePresenter extends Presenter[GameView] {
 			}
 		}
 		case MoveFigure(player, figure, dice) => {
-			val movement = game.nextPositions(player, figure, dice)
-			view.moveFigure(player, figure, movement)
-			game.moveFigure(player, figure, movement.last)
+			game.nextPositions(player, figure, dice) map { movement =>
+				view.moveFigure(player, figure, movement)
+				game.moveFigure(player, figure, movement.last)
+			}
 		}
 	}
 
@@ -67,8 +68,8 @@ class GamePresenter extends Presenter[GameView] {
 	def previewFigure(player: Player, figure: Figure) {
 		if (player == selfPlayer) {
 			lastDiceNumber map { dice =>
-				val movement = game.nextPositions(player, figure, dice)
-				view.previewPositions(player, movement)
+				game.nextPositions(player, figure, dice) map (movement =>
+					view.previewPositions(player, movement))
 			}
 		}
 	}

@@ -47,8 +47,8 @@ class ComputerPlayer(server: ActorRef, cpuPlayer: Player) extends Actor with Act
 			}
 		}
 		case MoveFigure(player, figure, dice) => {
-			val movement = game.nextPositions(player, figure, dice)
-			game.moveFigure(player, figure, movement.last)
+			game.nextPositions(player, figure, dice) map (movement =>
+				game.moveFigure(player, figure, movement.last))
 		}
 		case x => println("receive on cpu " + x)
 	}
