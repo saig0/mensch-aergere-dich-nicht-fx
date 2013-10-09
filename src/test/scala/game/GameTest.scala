@@ -84,4 +84,40 @@ class GameTest extends FlatSpec with Matchers {
 		game.moveFigure(player, figure, newPosition)
 		figure.position should be(newPosition)
 	}
+
+	it should "not beat a figure of other player" in {
+		val game = new Game(players)
+		val player1 = players(0)
+		val player2 = players(1)
+		val figure1 = game.gameStates(player1).figures(0)
+		game.moveFigure(player1, figure1, Field(3))
+		val figure2 = game.gameStates(player2).figures(0)
+		game.moveFigure(player2, figure2, Field(2)) should be(None)
+	}
+
+	it should "not beat a figure of other player on start" in {
+		val game = new Game(players)
+		val player1 = players(0)
+		val player2 = players(1)
+		val figure1 = game.gameStates(player1).figures(0)
+		game.moveFigure(player1, figure1, Start(0))
+		val figure2 = game.gameStates(player2).figures(0)
+		game.moveFigure(player2, figure2, Start(0)) should be(None)
+	}
+
+	it should "beat a figure of other player" in {
+		val game = new Game(players)
+		val player1 = players(0)
+		val player2 = players(1)
+		val figure1 = game.gameStates(player1).figures(0)
+		game.moveFigure(player1, figure1, Field(3))
+		val figure2 = game.gameStates(player2).figures(0)
+		game.moveFigure(player2, figure2, Field(3)) should be(Some(BeatFigure(player1, figure1)))
+	}
+
+	// andere Figure verdrängen
+	// Sieg
+	// nochmal würfeln bei 6
+	// 3 Versuche beim Start
+	// nur mit einer 6 beginnen
 }

@@ -119,12 +119,21 @@ class GameField(presenter: GamePresenter) {
 		}
 	}
 
+	private def coordinateOfPosition(player: Player, position: Position, playerFigure: PlayerFigure): (Double, Double) = {
+		position match {
+			case Start(_) => (playerFigure.x, playerFigure.y) // TODO: über Pos bestimmen
+			case pos => {
+				val field = fieldOfPosition(player, position)
+				(field.centerX.toDouble, field.centerY.toDouble)
+			}
+		}
+	}
+
 	def moveFigure(player: Player, figure: Figure, movement: List[Position]) {
 		val playerFigure = figures filter (f => f.player == player && f.figure == figure) head
 		val moves = for {
 			pos <- movement
-			val field = fieldOfPosition(player, pos)
-		} yield (field.centerX.toDouble, field.centerY.toDouble)
+		} yield coordinateOfPosition(player, pos, playerFigure)
 
 		playerFigure.move(moves)
 		playerFigure.figure.position = movement.last

@@ -30,7 +30,6 @@ case class Game(players: List[Player]) {
 		}
 	}
 
-	// TODO: auf Kollisionen mit anderen Figuren prüfen	
 	private def nextPosition(player: Player, figure: Figure, dice: Int): Option[Position] = {
 		figure.position match {
 			case Start(_) => Some(Field(startPositions(player) % gameFieldCount + dice)) // nur mit einer 6 starten
@@ -44,10 +43,19 @@ case class Game(players: List[Player]) {
 		}
 	}
 
-	def moveFigure(player: Player, figure: Figure, newPosition: Position) {
+	def moveFigure(player: Player, figure: Figure, newPosition: Position): Option[Action] = {
 		gameStates(player).figures filter (_ == figure) map (_.position = newPosition)
+		players filter (_ != player) map (player =>
+			gameStates(player).figures filter (_.position == newPosition && !newPosition.isInstanceOf[Start]) map (figure => (player, figure))) flatten match {
+			case Nil => None
+			case f :: Nil => Some(BeatFigure(f._1, f._2))
+		}
 	}
 }
+
+sealed trait Action
+
+case class BeatFigure(player: Player, figure: Figure) extends Action
 
 case class GameState {
 	val figures = 0 to 3 map (i => Figure(Start(i)))
