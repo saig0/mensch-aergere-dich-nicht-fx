@@ -115,7 +115,6 @@ class GameTest extends FlatSpec with Matchers {
 		game.moveFigure(player2, figure2, Field(3)) should be(Some(BeatFigure(player1, figure1)))
 	}
 
-	// andere Figure verdrängen
 	// Sieg
 	// nochmal würfeln bei 6
 	// 3 Versuche beim Start
