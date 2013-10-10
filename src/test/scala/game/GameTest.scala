@@ -115,7 +115,27 @@ class GameTest extends FlatSpec with Matchers {
 		game.moveFigure(player2, figure2, Field(3)) should be(Some(BeatFigure(player1, figure1)))
 	}
 
-	// Sieg
+	it should "not win the game with missing figures" in {
+		val game = new Game(players)
+		val player1 = players(0)
+		val figures = game.gameStates(player1).figures
+
+		game.moveFigure(player1, figures(0), Home(4))
+		game.moveFigure(player1, figures(1), Home(3))
+		game.moveFigure(player1, figures(2), Home(2)) should be(None)
+	}
+
+	it should "win the game" in {
+		val game = new Game(players)
+		val player1 = players(0)
+		val figures = game.gameStates(player1).figures
+
+		game.moveFigure(player1, figures(0), Home(4))
+		game.moveFigure(player1, figures(1), Home(3))
+		game.moveFigure(player1, figures(2), Home(2))
+		game.moveFigure(player1, figures(3), Home(1)) should be(Some(Win(player1)))
+	}
+
 	// nochmal würfeln bei 6
 	// 3 Versuche beim Start
 	// nur mit einer 6 beginnen

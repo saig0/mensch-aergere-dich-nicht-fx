@@ -69,17 +69,22 @@ class GamePresenter extends Presenter[GameView] {
 								val startPosition = Start(0)
 								view.moveFigure(player, figure, List(startPosition))
 								game.moveFigure(player, figure, startPosition)
+								nextTurn(player)
+							}
+							case Win(player) => {
+								// TODO: Event an Server + Spiel im Client + Server beenden
 							}
 						}
-					}
-
-					if (player == selfPlayer) {
-						client ! TurnCompleted(selfPlayer)
-					}
+					} getOrElse nextTurn(player)
 				}
 			}
 		}
 	}
+
+	private def nextTurn(player: Player) =
+		if (player == selfPlayer) {
+			client ! TurnCompleted(selfPlayer)
+		}
 
 	def onEnd {}
 

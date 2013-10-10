@@ -45,17 +45,30 @@ case class Game(players: List[Player]) {
 
 	def moveFigure(player: Player, figure: Figure, newPosition: Position): Option[Action] = {
 		gameStates(player).figures filter (_ == figure) map (_.position = newPosition)
-		players filter (_ != player) map (player =>
-			gameStates(player).figures filter (_.position == newPosition && !newPosition.isInstanceOf[Start]) map (figure => (player, figure))) flatten match {
-			case Nil => None
-			case f :: Nil => Some(BeatFigure(f._1, f._2))
-		}
+
+		beatFigure(player, newPosition) orElse winGame(player)
 	}
+
+	private def winGame(player: Player): Option[Action] =
+		gameStates(player).figures.filter(_.position.isInstanceOf[Home]) match {
+			case figuresInHome if (figuresInHome.size == 4) => Some(Win(player))
+			case _ => None
+		}
+
+	private def beatFigure(player: Player, newPosition: Position): Option[Action] =
+		players.filter(_ != player).map(player =>
+			gameStates(player).figures.filter(_.position == newPosition && !newPosition.isInstanceOf[Start]).map(figure => (player, figure))).flatten match {
+			case f :: Nil => Some(BeatFigure(f._1, f._2))
+			case Nil => None
+		}
+
 }
 
 sealed trait Action
 
 case class BeatFigure(player: Player, figure: Figure) extends Action
+
+case class Win(player: Player) extends Action
 
 case class RollDiceAgain(player: Player) extends Action
 
