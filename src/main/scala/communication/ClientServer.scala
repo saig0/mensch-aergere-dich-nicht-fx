@@ -24,6 +24,8 @@ case class NewTurn(player: Player, number: Int) extends ServerEvent
 
 case class MoveFigure(player: Player, figure: Figure, number: Int) extends ServerEvent
 
+case class TurnCompleted(player: Player)
+
 object ClientServer {
 
 	lazy val system: ActorSystem = ActorSystem("ClientServer", ConfigFactory.load.getConfig("clientServer"))
@@ -64,8 +66,8 @@ class ClientServer extends Actor with ActorLogging {
 		}
 		case event @ MoveFigure(player, _, dice) => {
 			sendAll(_ => event)
-			// nächste Runde
-			Thread.sleep(dice * 1000)
+		}
+		case TurnCompleted(player) => {
 			newTurn(nextPlayer(player))
 		}
 		case x => println("receive on server " + x)

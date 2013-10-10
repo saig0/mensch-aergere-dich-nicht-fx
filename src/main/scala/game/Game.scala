@@ -57,6 +57,8 @@ sealed trait Action
 
 case class BeatFigure(player: Player, figure: Figure) extends Action
 
+case class RollDiceAgain(player: Player) extends Action
+
 case class GameState {
 	val figures = 0 to 3 map (i => Figure(Start(i)))
 

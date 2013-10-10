@@ -14,6 +14,7 @@ import akka.actor.ActorRef
 import communication.Client
 import scala.concurrent._
 import ExecutionContext.Implicits.global
+import communication.TurnCompleted
 
 class GamePresenter extends Presenter[GameView] {
 
@@ -58,17 +59,22 @@ class GamePresenter extends Presenter[GameView] {
 		case MoveFigure(player, figure, dice) => {
 			game.nextPositions(player, figure, dice) map { movement =>
 				view.moveFigure(player, figure, movement)
-				game.moveFigure(player, figure, movement.last) map {
-					_ match {
-						case BeatFigure(player, figure) => {
-							val startPosition = Start(0)
-							game.moveFigure(player, figure, startPosition)
-							future {
-								// warten bis Animation zu ende ist
-								Thread.sleep(1000 * dice)
+				future {
+					// warten bis Animation zu ende ist
+					Thread.sleep(1000 * dice)
+
+					game.moveFigure(player, figure, movement.last) map {
+						_ match {
+							case BeatFigure(player, figure) => {
+								val startPosition = Start(0)
 								view.moveFigure(player, figure, List(startPosition))
+								game.moveFigure(player, figure, startPosition)
 							}
 						}
+					}
+
+					if (player == selfPlayer) {
+						client ! TurnCompleted(selfPlayer)
 					}
 				}
 			}
