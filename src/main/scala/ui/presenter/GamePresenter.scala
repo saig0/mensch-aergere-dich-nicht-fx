@@ -58,16 +58,15 @@ class GamePresenter extends Presenter[GameView] {
 		case MoveFigure(player, figure, dice) => {
 			game.nextPositions(player, figure, dice) map { movement =>
 				view.moveFigure(player, figure, movement)
-				future {
-					// warten bis Animation zu ende ist
-					Thread.sleep(1000 * dice)
-					game.moveFigure(player, figure, movement.last) map {
-						_ match {
-							case BeatFigure(player, figure) => {
-								val startPosition = Start(0)
-
+				game.moveFigure(player, figure, movement.last) map {
+					_ match {
+						case BeatFigure(player, figure) => {
+							val startPosition = Start(0)
+							game.moveFigure(player, figure, startPosition)
+							future {
+								// warten bis Animation zu ende ist
+								Thread.sleep(1000 * dice)
 								view.moveFigure(player, figure, List(startPosition))
-								game.moveFigure(player, figure, startPosition)
 							}
 						}
 					}
