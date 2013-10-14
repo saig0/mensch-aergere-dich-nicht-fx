@@ -55,19 +55,23 @@ class ComputerPlayer(server: ActorRef, cpuPlayer: Player) extends Actor with Act
 						case BeatFigure(player, figure) => {
 							val startPosition = Start(0)
 							game.moveFigure(player, figure, startPosition)
+							nextAction(player, figure, dice)
 						}
 					}
 				}
-			}
-			if (player == cpuPlayer) {
-				game.nextAction(player, figure, dice) match {
-					case EndTurn() => server ! TurnCompleted(cpuPlayer)
-					case RollDiceAgain(_) => server ! ContinueTurn(cpuPlayer)
-				}
-			}
+			} getOrElse nextAction(player, figure, dice)
 		}
 		case GameEnd(_) => disconnect
 		case x => println("receive on cpu " + x)
+	}
+
+	private def nextAction(player: Player, figure: Figure, dice: Int) {
+		if (player == cpuPlayer) {
+			game.nextAction(player, figure, dice) match {
+				case EndTurn() => server ! TurnCompleted(cpuPlayer)
+				case RollDiceAgain(_) => server ! ContinueTurn(cpuPlayer)
+			}
+		}
 	}
 
 	private def disconnect {
