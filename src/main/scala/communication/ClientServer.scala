@@ -24,7 +24,7 @@ case class NewTurn(player: Player, number: Int) extends ServerEvent
 
 case class MoveFigure(player: Player, figure: Figure, number: Int) extends ServerEvent
 
-case class TurnCompleted(player: Player)
+case class TurnCompleted(player: Player) extends ServerEvent
 
 object ClientServer {
 

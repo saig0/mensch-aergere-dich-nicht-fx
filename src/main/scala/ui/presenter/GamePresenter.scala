@@ -72,7 +72,11 @@ class GamePresenter extends Presenter[GameView] {
 								nextTurn(player)
 							}
 							case Win(player) => {
-								// TODO: Event an Server + Spiel im Client + Server beenden
+								if (player == selfPlayer) {
+									view.youWin(selfPlayer)
+								} else {
+									view.playerWin(player)
+								}
 							}
 						}
 					} getOrElse nextTurn(player)

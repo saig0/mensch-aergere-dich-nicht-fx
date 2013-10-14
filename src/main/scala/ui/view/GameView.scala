@@ -94,4 +94,12 @@ class GameView(presenter: GamePresenter) extends AbstractScene {
 	def moveFigure(player: Player, figure: Figure, movement: List[Position]) {
 		gameField.moveFigure(player, figure, movement)
 	}
+
+	def youWin(player: Player) {
+		activePlayer text = "Du hast gewonnen " + player.name + "!"
+	}
+
+	def playerWin(player: Player) {
+		activePlayer text = "Spieler " + player.name + " hat das Spiel gewonnen!"
+	}
 }
