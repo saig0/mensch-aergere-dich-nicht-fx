@@ -136,6 +136,24 @@ class GameTest extends FlatSpec with Matchers {
 		game.moveFigure(player1, figures(3), Home(1)) should be(Some(Win(player1)))
 	}
 
+	"A player" should "end turn after move a figure on field with 1" in {
+		val game = new Game(players)
+		val player = players(0)
+		val figure = game.gameStates(player).figures(0)
+
+		game.moveFigure(player, figure, Field(2))
+		game.nextAction(player, figure, 1) should be(EndTurn())
+	}
+
+	it should "roll dice again after move a figure on field with 6" in {
+		val game = new Game(players)
+		val player = players(0)
+		val figure = game.gameStates(player).figures(0)
+
+		game.moveFigure(player, figure, Field(6))
+		game.nextAction(player, figure, 6) should be(RollDiceAgain(player))
+	}
+
 	// nochmal würfeln bei 6
 	// 3 Versuche beim Start
 	// nur mit einer 6 beginnen

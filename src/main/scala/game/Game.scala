@@ -62,6 +62,14 @@ case class Game(players: List[Player]) {
 			case Nil => None
 		}
 
+	def nextAction(player: Player, figure: Figure, dice: Int): Action = {
+		if (dice == 6) {
+			RollDiceAgain(player)
+		} else {
+			EndTurn()
+		}
+	}
+
 }
 
 sealed trait Action
@@ -71,6 +79,8 @@ case class BeatFigure(player: Player, figure: Figure) extends Action
 case class Win(player: Player) extends Action
 
 case class RollDiceAgain(player: Player) extends Action
+
+case class EndTurn extends Action
 
 case class GameState {
 	val figures = 0 to 3 map (i => Figure(Start(i)))
