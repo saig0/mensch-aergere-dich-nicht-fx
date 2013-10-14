@@ -60,6 +60,7 @@ class Client(server: ActorRef) extends Actor with ActorLogging {
 		case event @ TurnCompleted(_) => server ! event
 		case ui.GameEnd(winner) => server ! GameEnd(winner)
 		case GameEnd(_) => disconnect
+		case event @ ContinueTurn(_) => server ! event
 		case x => println("receive on client " + x)
 	}
 

@@ -16,6 +16,7 @@ import scala.concurrent._
 import ExecutionContext.Implicits.global
 import communication.TurnCompleted
 import ui.GameEnd
+import communication.ContinueTurn
 
 class GamePresenter extends Presenter[GameView] {
 
@@ -70,7 +71,7 @@ class GamePresenter extends Presenter[GameView] {
 								val startPosition = Start(0)
 								view.moveFigure(player, figure, List(startPosition))
 								game.moveFigure(player, figure, startPosition)
-								nextTurn(player)
+								nextAction(player, figure, dice)
 							}
 							case Win(player) => {
 								if (player == selfPlayer) {
@@ -81,15 +82,18 @@ class GamePresenter extends Presenter[GameView] {
 								}
 							}
 						}
-					} getOrElse nextTurn(player)
+					} getOrElse nextAction(player, figure, dice)
 				}
 			}
 		}
 	}
 
-	private def nextTurn(player: Player) =
+	private def nextAction(player: Player, figure: Figure, dice: Int) =
 		if (player == selfPlayer) {
-			client ! TurnCompleted(selfPlayer)
+			game.nextAction(player, figure, dice) match {
+				case EndTurn() => client ! TurnCompleted(selfPlayer)
+				case RollDiceAgain(player) => client ! ContinueTurn(selfPlayer)
+			}
 		}
 
 	def onEnd {}

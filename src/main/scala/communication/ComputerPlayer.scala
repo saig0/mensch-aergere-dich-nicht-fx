@@ -60,7 +60,10 @@ class ComputerPlayer(server: ActorRef, cpuPlayer: Player) extends Actor with Act
 				}
 			}
 			if (player == cpuPlayer) {
-				server ! TurnCompleted(cpuPlayer)
+				game.nextAction(player, figure, dice) match {
+					case EndTurn() => server ! TurnCompleted(cpuPlayer)
+					case RollDiceAgain(_) => server ! ContinueTurn(cpuPlayer)
+				}
 			}
 		}
 		case GameEnd(_) => disconnect

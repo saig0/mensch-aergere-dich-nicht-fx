@@ -22,9 +22,11 @@ case class StartGame(players: List[Player]) extends ServerEvent
 
 case class NewTurn(player: Player, number: Int) extends ServerEvent
 
-case class MoveFigure(player: Player, figure: Figure, number: Int) extends ServerEvent
-
 case class TurnCompleted(player: Player) extends ServerEvent
+
+case class ContinueTurn(player: Player) extends ServerEvent
+
+case class MoveFigure(player: Player, figure: Figure, number: Int) extends ServerEvent
 
 case class GameEnd(winner: Player) extends ServerEvent
 
@@ -70,6 +72,7 @@ class ClientServer extends Actor with ActorLogging {
 			sendAll(_ => event)
 		}
 		case TurnCompleted(player) => newTurn(nextPlayer(player))
+		case ContinueTurn(player) => newTurn(player)
 		case event @ GameEnd(_) => {
 			sendAll(_ => event)
 			ClientServer.system.stop(self)
