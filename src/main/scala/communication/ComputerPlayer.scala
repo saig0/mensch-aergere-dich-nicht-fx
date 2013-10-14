@@ -31,8 +31,7 @@ class ComputerPlayer(server: ActorRef, cpuPlayer: Player) extends Actor with Act
 
 	def receive = {
 		case DisconnectPlayer => {
-			ComputerPlayer.cpuPlayer -= 1
-			Main.system.stop(self)
+			disconnect
 		}
 		case StartGame(players) => {
 			game = Game(players)
@@ -64,6 +63,12 @@ class ComputerPlayer(server: ActorRef, cpuPlayer: Player) extends Actor with Act
 				server ! TurnCompleted(cpuPlayer)
 			}
 		}
+		case GameEnd(_) => disconnect
 		case x => println("receive on cpu " + x)
+	}
+
+	private def disconnect {
+		ComputerPlayer.cpuPlayer -= 1
+		ClientServer.system.stop(self)
 	}
 }

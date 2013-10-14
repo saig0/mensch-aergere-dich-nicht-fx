@@ -15,6 +15,7 @@ import communication.Client
 import scala.concurrent._
 import ExecutionContext.Implicits.global
 import communication.TurnCompleted
+import ui.GameEnd
 
 class GamePresenter extends Presenter[GameView] {
 
@@ -74,6 +75,7 @@ class GamePresenter extends Presenter[GameView] {
 							case Win(player) => {
 								if (player == selfPlayer) {
 									view.youWin(selfPlayer)
+									client ! GameEnd(selfPlayer)
 								} else {
 									view.playerWin(player)
 								}

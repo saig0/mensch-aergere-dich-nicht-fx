@@ -52,6 +52,8 @@ case class NewTurn(player: Player, number: Int) extends ClientEvent
 
 case class MoveFigure(player: Player, figure: Figure, number: Int) extends ClientEvent
 
+case class GameEnd(winner: Player) extends ClientEvent
+
 object Main extends JFXApp {
 
 	val system = ActorSystem.create("EventBus")

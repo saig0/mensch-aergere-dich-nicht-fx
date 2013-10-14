@@ -57,9 +57,13 @@ class Client(server: ActorRef) extends Actor with ActorLogging {
 		case MoveFigure(player, figure, number) => {
 			Main.publish(ui.MoveFigure(player, figure, number))
 		}
-		case event @ TurnCompleted(_) => {
-			server ! event
-		}
+		case event @ TurnCompleted(_) => server ! event
+		case ui.GameEnd(winner) => server ! GameEnd(winner)
+		case GameEnd(_) => disconnect
 		case x => println("receive on client " + x)
+	}
+
+	private def disconnect {
+		Client.system.stop(self)
 	}
 }
