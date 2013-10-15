@@ -17,6 +17,7 @@ import ExecutionContext.Implicits.global
 import communication.TurnCompleted
 import ui.GameEnd
 import communication.ContinueTurn
+import communication.TurnCompleted
 
 class GamePresenter extends Presenter[GameView] {
 
@@ -50,6 +51,12 @@ class GamePresenter extends Presenter[GameView] {
 				view.yourTurn(player)
 				view.dice(number)
 			}
+			if (!game.canMoveFigure(player, number)) {
+				future {
+					Thread.sleep(number * 1000) // warten auf Würfel Animation 
+					nextAction(player, number)
+				}
+			}
 		}
 		case NewTurn(player, number) => {
 			lastDiceNumber = None
@@ -71,7 +78,7 @@ class GamePresenter extends Presenter[GameView] {
 								val startPosition = Start(0)
 								view.moveFigure(player, figure, List(startPosition))
 								game.moveFigure(player, figure, startPosition)
-								nextAction(player, figure, dice)
+								nextAction(player, dice)
 							}
 							case Win(player) => {
 								if (player == selfPlayer) {
@@ -82,15 +89,15 @@ class GamePresenter extends Presenter[GameView] {
 								}
 							}
 						}
-					} getOrElse nextAction(player, figure, dice)
+					} getOrElse nextAction(player, dice)
 				}
 			}
 		}
 	}
 
-	private def nextAction(player: Player, figure: Figure, dice: Int) =
+	private def nextAction(player: Player, dice: Int) =
 		if (player == selfPlayer) {
-			game.nextAction(player, figure, dice) match {
+			game.nextAction(player, dice) match {
 				case EndTurn() => client ! TurnCompleted(selfPlayer)
 				case RollDiceAgain(player) => client ! ContinueTurn(selfPlayer)
 			}

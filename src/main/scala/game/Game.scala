@@ -61,7 +61,7 @@ case class Game(players: List[Player]) {
 			case Nil => None
 		}
 
-	def nextAction(player: Player, figure: Figure, dice: Int): Action = {
+	def nextAction(player: Player, dice: Int): Action = {
 		if (dice == 6) {
 			RollDiceAgain(player)
 		} else {
@@ -69,6 +69,10 @@ case class Game(players: List[Player]) {
 		}
 	}
 
+	def canMoveFigure(player: Player, dice: Int): Boolean = {
+		val possibleMovements = gameStates(player).figures.map(figure => nextPositions(player, figure, dice)).flatten
+		!possibleMovements.isEmpty
+	}
 }
 
 sealed trait Action

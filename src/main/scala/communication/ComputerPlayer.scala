@@ -40,9 +40,14 @@ class ComputerPlayer(server: ActorRef, cpuPlayer: Player) extends Actor with Act
 			if (player == cpuPlayer) {
 				// warten bis Würfel fertig ist
 				Thread.sleep(2000)
-				// TODO: intelligentere Auswahl der Figur
-				val figure = game.gameStates(player).figures.head
-				server ! MoveFigure(player, figure, dice)
+
+				if (game.canMoveFigure(player, dice)) {
+					// TODO: intelligentere Auswahl der Figur
+					val figure = game.gameStates(player).figures.head
+					server ! MoveFigure(player, figure, dice)
+				} else {
+					nextAction(player, dice)
+				}
 			}
 		}
 		case MoveFigure(player, figure, dice) => {
@@ -55,19 +60,19 @@ class ComputerPlayer(server: ActorRef, cpuPlayer: Player) extends Actor with Act
 						case BeatFigure(player, figure) => {
 							val startPosition = Start(0)
 							game.moveFigure(player, figure, startPosition)
-							nextAction(player, figure, dice)
+							nextAction(player, dice)
 						}
 					}
 				}
-			} getOrElse nextAction(player, figure, dice)
+			} getOrElse nextAction(player, dice)
 		}
 		case GameEnd(_) => disconnect
 		case x => println("receive on cpu " + x)
 	}
 
-	private def nextAction(player: Player, figure: Figure, dice: Int) {
+	private def nextAction(player: Player, dice: Int) {
 		if (player == cpuPlayer) {
-			game.nextAction(player, figure, dice) match {
+			game.nextAction(player, dice) match {
 				case EndTurn() => server ! TurnCompleted(cpuPlayer)
 				case RollDiceAgain(_) => server ! ContinueTurn(cpuPlayer)
 			}

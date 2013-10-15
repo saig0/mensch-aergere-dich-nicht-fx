@@ -152,7 +152,7 @@ class GameTest extends FlatSpec with Matchers {
 		val figure = game.gameStates(player).figures(0)
 
 		game.moveFigure(player, figure, Field(2))
-		game.nextAction(player, figure, 1) should be(EndTurn())
+		game.nextAction(player, 1) should be(EndTurn())
 	}
 
 	it should "roll dice again after move a figure on field with 6" in {
@@ -161,7 +161,7 @@ class GameTest extends FlatSpec with Matchers {
 		val figure = game.gameStates(player).figures(0)
 
 		game.moveFigure(player, figure, Field(6))
-		game.nextAction(player, figure, 6) should be(RollDiceAgain(player))
+		game.nextAction(player, 6) should be(RollDiceAgain(player))
 	}
 
 	// 3 Versuche beim Start
