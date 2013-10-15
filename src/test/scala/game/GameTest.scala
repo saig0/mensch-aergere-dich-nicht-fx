@@ -12,14 +12,24 @@ class GameTest extends FlatSpec with Matchers {
 
 	val players = List(Player("Player 1"), Player("Player 2"), Player("Player 3"), Player("Player 4"))
 
-	"A figure" should "start on field 1 with 1 for player 1" in {
+	"A figure" should "start on field 1 with 6 for player 1" in {
 		val game = new Game(players)
-		game.nextPositions(players(0), Figure(Start(0)), 1) should be(Some(List(Field(1))))
+		game.nextPositions(players(0), Figure(Start(0)), 6) should be(Some(List(Field(1))))
 	}
 
-	it should "start on field 11 with 1 for player 2" in {
+	it should "start on field 11 with 6 for player 2" in {
 		val game = new Game(players)
-		game.nextPositions(players(1), Figure(Start(0)), 1) should be(Some(List(Field(11))))
+		game.nextPositions(players(1), Figure(Start(0)), 6) should be(Some(List(Field(11))))
+	}
+
+	it should "not start with 1" in {
+		val game = new Game(players)
+		game.nextPositions(players(0), Figure(Start(0)), 1) should be(None)
+	}
+
+	it should "not start with 2" in {
+		val game = new Game(players)
+		game.nextPositions(players(0), Figure(Start(0)), 2) should be(None)
 	}
 
 	it should "move 2 fields with 2 for player 1" in {
@@ -154,7 +164,6 @@ class GameTest extends FlatSpec with Matchers {
 		game.nextAction(player, figure, 6) should be(RollDiceAgain(player))
 	}
 
-	// nochmal würfeln bei 6
 	// 3 Versuche beim Start
-	// nur mit einer 6 beginnen
+
 }

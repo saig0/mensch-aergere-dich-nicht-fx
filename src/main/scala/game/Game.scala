@@ -20,9 +20,8 @@ case class Game(players: List[Player]) {
 
 	def nextPositions(player: Player, figure: Figure, dice: Int): Option[List[Position]] = {
 		val movement = 1 to dice map (nextPosition(player, figure, _)) toList match {
-			case Nil => None
-			case m if (m exists (_ == None)) => None
-			case m => Some(m flatten)
+			case m if (m.last != None) => Some(m flatten)
+			case _ => None
 		}
 		movement match {
 			case Some(positions) if (!gameStates(player).figures.exists(_.position == positions.last)) => Some(positions)
@@ -32,14 +31,14 @@ case class Game(players: List[Player]) {
 
 	private def nextPosition(player: Player, figure: Figure, dice: Int): Option[Position] = {
 		figure.position match {
-			case Start(_) => Some(Field(startPositions(player) % gameFieldCount + dice)) // nur mit einer 6 starten
+			case Start(_) if (dice == 6) => Some(Field(startPositions(player) % gameFieldCount + 1))
 			case Field(pos) if (pos > startPositions(player) || pos + dice <= startPositions(player)) => {
 				if (pos + dice == gameFieldCount) Some(Field(gameFieldCount))
 				else Some(Field((pos + dice) % gameFieldCount))
 			}
 			case Field(pos) if (pos + dice - startPositions(player) <= 4) => Some(Home(pos + dice - startPositions(player)))
 			case Home(pos) if (pos + dice <= 4) => Some(Home(pos + dice))
-			case _ => None
+			case _ => None // auﬂerhalb vom Spielbrett oder keine 6 beim Start
 		}
 	}
 
