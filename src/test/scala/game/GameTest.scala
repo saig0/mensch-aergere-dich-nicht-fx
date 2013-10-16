@@ -171,7 +171,6 @@ class GameTest extends FlatSpec with Matchers {
 
 		game.nextAction(player, 1) should be(RollDiceAgain(player))
 		game.nextAction(player, 2) should be(RollDiceAgain(player))
-		game.nextAction(player, 3) should be(RollDiceAgain(player))
 	}
 
 	it should "not roll dice again while trying to move figure from start for more than 3 times" in {
@@ -179,9 +178,8 @@ class GameTest extends FlatSpec with Matchers {
 		val player = players(0)
 		val figure = game.gameStates(player).figures(0)
 
-		game.nextAction(player, 1) should be(RollDiceAgain(player))
-		game.nextAction(player, 2) should be(RollDiceAgain(player))
-		game.nextAction(player, 3) should be(RollDiceAgain(player))
-		game.nextAction(player, 4) should be(EndTurn())
+		game.nextAction(player, 1)
+		game.nextAction(player, 2)
+		game.nextAction(player, 3) should be(EndTurn())
 	}
 }

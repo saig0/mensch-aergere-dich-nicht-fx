@@ -66,21 +66,18 @@ case class Game(players: List[Player]) {
 		}
 
 	def nextAction(player: Player, dice: Int): Action = {
-		history.reverse match {
-			case (lastPlayer, _) :: _ if (lastPlayer != player) => history ::= player -> None
-			case (lastPlayer, None) :: _ if (lastPlayer == player) => history ::= player -> None
-			case Nil => history ::= player -> None
-			case _ =>
-		}
-
 		if (dice == 6) {
 			RollDiceAgain(player)
-		} else if (tries(player, history.reverse) >= 1 && tries(player, history.reverse) <= 3) {
+		} else if (allFiguresOnStart(player) && tries(player, history.reverse) < 2) {
+			history ::= player -> None
 			RollDiceAgain(player)
 		} else {
 			EndTurn()
 		}
 	}
+
+	private def allFiguresOnStart(player: Player): Boolean =
+		gameStates(player).figures.filter(_.position.isInstanceOf[Start]).size == 4
 
 	private def tries(player: Player, history: List[(Player, Option[(Figure, Position)])]): Int =
 		history match {
