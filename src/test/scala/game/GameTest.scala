@@ -168,6 +168,7 @@ class GameTest extends FlatSpec with Matchers {
 		val game = new Game(players)
 		val player = players(0)
 
+		game.couldNotMoveFigure(player)
 		game.nextAction(player, 1) should be(RollDiceAgain(player))
 	}
 
@@ -175,7 +176,8 @@ class GameTest extends FlatSpec with Matchers {
 		val game = new Game(players)
 		val player = players(0)
 
-		game.nextAction(player, 1)
+		game.couldNotMoveFigure(player)
+		game.couldNotMoveFigure(player)
 		game.nextAction(player, 2) should be(RollDiceAgain(player))
 	}
 
@@ -183,8 +185,9 @@ class GameTest extends FlatSpec with Matchers {
 		val game = new Game(players)
 		val player = players(0)
 
-		game.nextAction(player, 1)
-		game.nextAction(player, 2)
+		game.couldNotMoveFigure(player)
+		game.couldNotMoveFigure(player)
+		game.couldNotMoveFigure(player)
 		game.nextAction(player, 3) should be(EndTurn())
 	}
 
@@ -193,14 +196,15 @@ class GameTest extends FlatSpec with Matchers {
 		val player1 = players(0)
 		val player2 = players(1)
 
-		game.nextAction(player1, 1) should be(RollDiceAgain(player1))
-		game.nextAction(player1, 2) should be(RollDiceAgain(player1))
-		game.nextAction(player1, 3) should be(EndTurn())
+		game.couldNotMoveFigure(player1)
+		game.couldNotMoveFigure(player1)
+		game.couldNotMoveFigure(player1)
 
-		game.nextAction(player2, 1) should be(RollDiceAgain(player2))
-		game.nextAction(player2, 2) should be(RollDiceAgain(player2))
-		game.nextAction(player2, 3) should be(EndTurn())
+		game.couldNotMoveFigure(player2)
+		game.couldNotMoveFigure(player2)
+		game.couldNotMoveFigure(player2)
 
+		game.couldNotMoveFigure(player1)
 		game.nextAction(player1, 1) should be(RollDiceAgain(player1))
 	}
 }

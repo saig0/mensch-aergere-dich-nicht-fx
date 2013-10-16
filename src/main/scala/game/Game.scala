@@ -65,11 +65,14 @@ case class Game(players: List[Player]) {
 			case Nil => None
 		}
 
+	def couldNotMoveFigure(player: Player) {
+		history ::= player -> None
+	}
+
 	def nextAction(player: Player, dice: Int): Action = {
 		if (dice == 6) {
 			RollDiceAgain(player)
-		} else if (allFiguresOnStart(player) && tries(player, history) < 2) {
-			history ::= player -> None
+		} else if (allFiguresOnStart(player) && tries(player, history) < 3) {
 			RollDiceAgain(player)
 		} else {
 			EndTurn()

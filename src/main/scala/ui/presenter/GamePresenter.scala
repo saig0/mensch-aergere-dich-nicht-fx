@@ -54,6 +54,7 @@ class GamePresenter extends Presenter[GameView] {
 			if (!game.canMoveFigure(player, number)) {
 				future {
 					Thread.sleep(1000 * (2 + 1)) // warten auf Würfel Animation 
+					game.couldNotMoveFigure(player)
 					nextAction(player, number)
 				}
 			}
@@ -63,6 +64,9 @@ class GamePresenter extends Presenter[GameView] {
 			updateUi {
 				view.newTurn(player)
 				view.dice(number)
+			}
+			if (!game.canMoveFigure(player, number)) {
+				game.couldNotMoveFigure(player)
 			}
 		}
 		case MoveFigure(player, figure, dice) => {

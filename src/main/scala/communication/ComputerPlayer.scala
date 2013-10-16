@@ -38,23 +38,27 @@ class ComputerPlayer(server: ActorRef, cpuPlayer: Player) extends Actor with Act
 		case StartGame(players) => {
 			game = Game(players)
 		}
-		case NewTurn(player, dice) => {
-			if (player == cpuPlayer) {
-				future {
-					// warten bis Würfel fertig ist
-					Thread.sleep(1000 * 2)
+		case NewTurn(player, dice) if (player == cpuPlayer) => {
+			future {
+				// warten bis Würfel fertig ist
+				Thread.sleep(1000 * 2)
 
-					if (game.canMoveFigure(player, dice)) {
-						// TODO: intelligentere Auswahl der Figur
-						val figure = game.gameStates(player).figures.head
-						server ! MoveFigure(player, figure, dice)
-					} else {
-						future {
-							Thread.sleep(1000)
-							nextAction(player, dice)
-						}
+				if (game.canMoveFigure(player, dice)) {
+					// TODO: intelligentere Auswahl der Figur
+					val figure = game.gameStates(player).figures.head
+					server ! MoveFigure(player, figure, dice)
+				} else {
+					future {
+						Thread.sleep(1000)
+						game.couldNotMoveFigure(player)
+						nextAction(player, dice)
 					}
 				}
+			}
+		}
+		case NewTurn(player, dice) => {
+			if (!game.canMoveFigure(player, dice)) {
+				game.couldNotMoveFigure(player)
 			}
 		}
 		case MoveFigure(player, figure, dice) => {
