@@ -42,7 +42,11 @@ case class Game(players: List[Player]) {
 		}
 	}
 
+	private var history = List[(Player, Option[(Figure, Position)])]()
+
 	def moveFigure(player: Player, figure: Figure, newPosition: Position): Option[Action] = {
+		history ::= player -> Some(figure -> newPosition)
+
 		gameStates(player).figures filter (_ == figure) map (_.position = newPosition)
 
 		beatFigure(player, newPosition) orElse winGame(player)
@@ -62,12 +66,27 @@ case class Game(players: List[Player]) {
 		}
 
 	def nextAction(player: Player, dice: Int): Action = {
+		history.reverse match {
+			case (lastPlayer, _) :: _ if (lastPlayer != player) => history ::= player -> None
+			case (lastPlayer, None) :: _ if (lastPlayer == player) => history ::= player -> None
+			case Nil => history ::= player -> None
+			case _ =>
+		}
+
 		if (dice == 6) {
+			RollDiceAgain(player)
+		} else if (tries(player, history.reverse) >= 1 && tries(player, history.reverse) <= 3) {
 			RollDiceAgain(player)
 		} else {
 			EndTurn()
 		}
 	}
+
+	private def tries(player: Player, history: List[(Player, Option[(Figure, Position)])]): Int =
+		history match {
+			case (lastPlayer, None) :: hs if (lastPlayer == player) => 1 + tries(player, hs)
+			case _ => 0
+		}
 
 	def canMoveFigure(player: Player, dice: Int): Boolean = {
 		val possibleMovements = gameStates(player).figures.map(figure => nextPositions(player, figure, dice)).flatten

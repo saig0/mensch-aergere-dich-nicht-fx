@@ -164,6 +164,24 @@ class GameTest extends FlatSpec with Matchers {
 		game.nextAction(player, 6) should be(RollDiceAgain(player))
 	}
 
-	// 3 Versuche beim Start
+	it should "roll dice again while trying to move figure from start for 3 times" in {
+		val game = new Game(players)
+		val player = players(0)
+		val figure = game.gameStates(player).figures(0)
 
+		game.nextAction(player, 1) should be(RollDiceAgain(player))
+		game.nextAction(player, 2) should be(RollDiceAgain(player))
+		game.nextAction(player, 3) should be(RollDiceAgain(player))
+	}
+
+	it should "not roll dice again while trying to move figure from start for more than 3 times" in {
+		val game = new Game(players)
+		val player = players(0)
+		val figure = game.gameStates(player).figures(0)
+
+		game.nextAction(player, 1) should be(RollDiceAgain(player))
+		game.nextAction(player, 2) should be(RollDiceAgain(player))
+		game.nextAction(player, 3) should be(RollDiceAgain(player))
+		game.nextAction(player, 4) should be(EndTurn())
+	}
 }
