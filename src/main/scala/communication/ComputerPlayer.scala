@@ -69,6 +69,9 @@ class ComputerPlayer(server: ActorRef, cpuPlayer: Player) extends Actor with Act
 							game.moveFigure(player, figure, startPosition)
 							nextAction(player, dice)
 						}
+						case Win(player) if (player == cpuPlayer) => {
+							server ! GameEnd(cpuPlayer)
+						}
 					}
 				} getOrElse nextAction(player, dice)
 			}
