@@ -60,7 +60,7 @@ class ComputerPlayer(server: ActorRef, cpuPlayer: Player) extends Actor with Act
 		case MoveFigure(player, figure, dice) => {
 			game.nextPositions(player, figure, dice) map { movement =>
 				// warten bis Animation zu ende ist
-				Thread.sleep(1000 * dice)
+				Thread.sleep(1000 * movement.size)
 
 				game.moveFigure(player, figure, movement.last) map {
 					_ match {

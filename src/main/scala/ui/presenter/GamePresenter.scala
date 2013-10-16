@@ -70,7 +70,7 @@ class GamePresenter extends Presenter[GameView] {
 				view.moveFigure(player, figure, movement)
 				future {
 					// warten bis Animation zu ende ist
-					Thread.sleep(1000 * dice)
+					Thread.sleep(1000 * movement.size)
 
 					game.moveFigure(player, figure, movement.last) map {
 						_ match {
