@@ -10,6 +10,8 @@ import ui.Main
 import ui.JoinPlayer
 import model.Player
 import game._
+import scala.concurrent._
+import ExecutionContext.Implicits.global
 
 object ComputerPlayer {
 
@@ -38,15 +40,20 @@ class ComputerPlayer(server: ActorRef, cpuPlayer: Player) extends Actor with Act
 		}
 		case NewTurn(player, dice) => {
 			if (player == cpuPlayer) {
-				// warten bis Würfel fertig ist
-				Thread.sleep(2000)
+				future {
+					// warten bis Würfel fertig ist
+					Thread.sleep(1000 * 2)
 
-				if (game.canMoveFigure(player, dice)) {
-					// TODO: intelligentere Auswahl der Figur
-					val figure = game.gameStates(player).figures.head
-					server ! MoveFigure(player, figure, dice)
-				} else {
-					nextAction(player, dice)
+					if (game.canMoveFigure(player, dice)) {
+						// TODO: intelligentere Auswahl der Figur
+						val figure = game.gameStates(player).figures.head
+						server ! MoveFigure(player, figure, dice)
+					} else {
+						future {
+							Thread.sleep(1000)
+							nextAction(player, dice)
+						}
+					}
 				}
 			}
 		}
@@ -63,8 +70,8 @@ class ComputerPlayer(server: ActorRef, cpuPlayer: Player) extends Actor with Act
 							nextAction(player, dice)
 						}
 					}
-				}
-			} getOrElse nextAction(player, dice)
+				} getOrElse nextAction(player, dice)
+			}
 		}
 		case GameEnd(_) => disconnect
 		case x => println("receive on cpu " + x)

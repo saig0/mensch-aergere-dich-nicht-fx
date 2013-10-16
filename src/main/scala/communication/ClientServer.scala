@@ -65,7 +65,6 @@ class ClientServer extends Actor with ActorLogging {
 			sendAll { _ =>
 				StartGame(players)
 			}
-			Thread.sleep(1000)
 			newTurn(players.head)
 		}
 		case event @ MoveFigure(player, _, dice) => {
