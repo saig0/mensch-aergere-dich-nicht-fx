@@ -68,7 +68,7 @@ case class Game(players: List[Player]) {
 	def nextAction(player: Player, dice: Int): Action = {
 		if (dice == 6) {
 			RollDiceAgain(player)
-		} else if (allFiguresOnStart(player) && tries(player, history.reverse) < 2) {
+		} else if (allFiguresOnStart(player) && tries(player, history) < 2) {
 			history ::= player -> None
 			RollDiceAgain(player)
 		} else {
