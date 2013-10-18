@@ -115,6 +115,16 @@ class GameTest extends FlatSpec with Matchers {
 		game.moveFigure(player2, figure2, Start(0)) should be(None)
 	}
 
+	it should "not beat a figure of other player on home" in {
+		val game = new Game(players)
+		val player1 = players(0)
+		val player2 = players(1)
+		val figure1 = game.gameStates(player1).figures(0)
+		game.moveFigure(player1, figure1, Home(1))
+		val figure2 = game.gameStates(player2).figures(0)
+		game.moveFigure(player2, figure2, Home(1)) should be(None)
+	}
+
 	it should "beat a figure of other player" in {
 		val game = new Game(players)
 		val player1 = players(0)

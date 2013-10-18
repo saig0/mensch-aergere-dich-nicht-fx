@@ -60,7 +60,7 @@ case class Game(players: List[Player]) {
 
 	private def beatFigure(player: Player, newPosition: Position): Option[Action] =
 		players.filter(_ != player).map(player =>
-			gameStates(player).figures.filter(_.position == newPosition && !newPosition.isInstanceOf[Start]).map(figure => (player, figure))).flatten match {
+			gameStates(player).figures.filter(_.position == newPosition && newPosition.isInstanceOf[Field]).map(figure => (player, figure))).flatten match {
 			case f :: Nil => Some(BeatFigure(f._1, f._2))
 			case Nil => None
 		}
