@@ -69,9 +69,9 @@ class ComputerPlayer(server: ActorRef, cpuPlayer: Player) extends Actor with Act
 
 				game.moveFigure(player, figure, movement.last) map {
 					_ match {
-						case BeatFigure(player, figure) => {
+						case BeatFigure(beatenPlayer, figure) => {
 							val startPosition = Start(0)
-							game.moveFigure(player, figure, startPosition)
+							game.moveFigure(beatenPlayer, figure, startPosition)
 							nextAction(player, dice)
 						}
 						case Win(player) if (player == cpuPlayer) => {

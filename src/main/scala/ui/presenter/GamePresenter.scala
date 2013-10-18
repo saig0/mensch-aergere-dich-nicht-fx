@@ -78,10 +78,10 @@ class GamePresenter extends Presenter[GameView] {
 
 					game.moveFigure(player, figure, movement.last) map {
 						_ match {
-							case BeatFigure(player, figure) => {
+							case BeatFigure(beatenPlayer, figure) => {
 								val startPosition = Start(0)
-								view.moveFigure(player, figure, List(startPosition))
-								game.moveFigure(player, figure, startPosition)
+								view.moveFigure(beatenPlayer, figure, List(startPosition))
+								game.moveFigure(beatenPlayer, figure, startPosition)
 								nextAction(player, dice)
 							}
 							case Win(player) => {
