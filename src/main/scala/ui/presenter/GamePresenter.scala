@@ -53,7 +53,7 @@ class GamePresenter extends Presenter[GameView] {
 			}
 			if (!game.canMoveFigure(player, number)) {
 				future {
-					Thread.sleep(1000 * (2 + 1)) // warten auf Würfel Animation 
+					Thread.sleep(1000 * (2 + 1)) // warten auf WÃ¼rfel Animation 
 					game.couldNotMoveFigure(player)
 					nextAction(player, number)
 				}

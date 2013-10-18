@@ -121,7 +121,7 @@ class GameField(presenter: GamePresenter) {
 
 	private def coordinateOfPosition(player: Player, position: Position, playerFigure: PlayerFigure): (Double, Double) = {
 		position match {
-			case Start(_) => (playerFigure.x, playerFigure.y) // TODO: über Pos bestimmen
+			case Start(_) => (playerFigure.x, playerFigure.y) // TODO: Ã¼dber Pos bestimmen
 			case pos => {
 				val field = fieldOfPosition(player, position)
 				(field.centerX.toDouble, field.centerY.toDouble)

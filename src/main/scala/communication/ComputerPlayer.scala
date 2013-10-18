@@ -40,7 +40,7 @@ class ComputerPlayer(server: ActorRef, cpuPlayer: Player) extends Actor with Act
 		}
 		case NewTurn(player, dice) if (player == cpuPlayer) => {
 			future {
-				// warten bis Würfel fertig ist
+				// warten bis WÃ¼rfel fertig ist
 				Thread.sleep(1000 * 2)
 
 				if (game.canMoveFigure(player, dice)) {

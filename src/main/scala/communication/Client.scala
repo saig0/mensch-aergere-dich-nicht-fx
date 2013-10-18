@@ -22,7 +22,7 @@ object Client {
 			"akka://ClientServer@" + remoteServerIp + ":2553/user/clientServer")
 		val actor = system.actorOf(Props(new Client(server)), "client")
 
-		// löst eine Exception aus, wenn keine Verbindung aufgebaut werden kann
+		// lÃ¶st eine Exception aus, wenn keine Verbindung aufgebaut werden kann
 		server ! ConnectedPlayer(player, actor)
 
 		this.client = actor

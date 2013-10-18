@@ -19,7 +19,7 @@ class TitleView extends HBox with ScalaFxView {
 
 	content = List(
 		new Text {
-			text = "Mensch ärgere dich nicht"
+			text = "Mensch Ã„rgere dich nicht"
 			id = "h1"
 			effect = new Reflection
 			fill = new LinearGradient(

@@ -38,7 +38,7 @@ case class Game(players: List[Player]) {
 			}
 			case Field(pos) if (pos + dice - startPositions(player) <= 4) => Some(Home(pos + dice - startPositions(player)))
 			case Home(pos) if (pos + dice <= 4) => Some(Home(pos + dice))
-			case _ => None // auﬂerhalb vom Spielbrett oder keine 6 beim Start
+			case _ => None // au√üerhalb vom Spielbrett oder keine 6 beim Start
 		}
 	}
 
