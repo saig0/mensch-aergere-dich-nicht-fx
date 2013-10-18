@@ -45,7 +45,8 @@ class ComputerPlayer(server: ActorRef, cpuPlayer: Player) extends Actor with Act
 
 				if (game.canMoveFigure(player, dice)) {
 					// TODO: intelligentere Auswahl der Figur
-					val figure = game.gameStates(player).figures.head
+					val possibleMovements = game.gameStates(player).figures map (figure => game.nextPositions(player, figure, dice) map (movement => figure -> movement)) flatten
+					val figure = possibleMovements.head._1
 					server ! MoveFigure(player, figure, dice)
 				} else {
 					future {
