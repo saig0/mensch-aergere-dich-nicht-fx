@@ -27,6 +27,7 @@ import communication.ClientServer
 import javafx.stage.WindowEvent
 import communication.Client
 import game.Figure
+import util.Logging
 
 trait ClientEvent
 
@@ -54,7 +55,7 @@ case class MoveFigure(player: Player, figure: Figure, number: Int) extends Clien
 
 case class GameEnd(winner: Player) extends ClientEvent
 
-object Main extends JFXApp {
+object Main extends JFXApp with Logging {
 
 	val system = ActorSystem.create("EventBus")
 
@@ -112,4 +113,6 @@ object Main extends JFXApp {
 
 	Thread.sleep(1000)
 	publish(GoToStart())
+
+	debug("app started")
 }

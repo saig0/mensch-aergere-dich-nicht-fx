@@ -15,8 +15,11 @@ libraryDependencies ++= Seq(
   "net.databinder.dispatch" %% "dispatch-core" % "0.10.0",
   "org.scalafx" % "scalafx_2.10" % "1.0.0-M3",
   "com.typesafe.akka" %% "akka-actor" % "2.1.2",
-  "com.typesafe.akka" %% "akka-remote" % "2.1.2"
+  "com.typesafe.akka" %% "akka-remote" % "2.1.2",
+  "com.typesafe.akka" %% "akka-slf4j" % "2.1.2"  
  )
+ 
+libraryDependencies += "ch.qos.logback" % "logback-classic" % "1.0.13"
  
 libraryDependencies += "org.scalatest" % "scalatest_2.10" % "1.9.2" % "test"
 
