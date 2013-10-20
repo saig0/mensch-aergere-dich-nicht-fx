@@ -33,6 +33,7 @@ class ConnectGamePresenter extends Presenter[ConnectGameView] {
 	def onStart = {
 		case GoToConnectIp(player) => {
 			this.player = player
+			updateUi(view.showView)
 		}
 	}
 

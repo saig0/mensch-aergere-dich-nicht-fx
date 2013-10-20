@@ -10,6 +10,9 @@ import ui.Main
 import model.Player
 import ui.JoinPlayer
 import game.Figure
+import akka.actor.Terminated
+import java.nio.channels.ClosedChannelException
+import akka.remote.RemoteClientError
 
 case class ClientMessage(x: Any)
 
@@ -20,6 +23,9 @@ object Client {
 	def create(player: Player, remoteServerIp: String = "127.0.0.1"): ActorRef = {
 		val server = system.actorFor(
 			"akka://ClientServer@" + remoteServerIp + ":2553/user/clientServer")
+
+		ErrorActor(system)
+
 		val actor = system.actorOf(Props(new Client(server)), "client")
 
 		// löst eine Exception aus, wenn keine Verbindung aufgebaut werden kann

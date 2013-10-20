@@ -22,23 +22,34 @@ class ConnectGameView(presenter: ConnectGamePresenter) extends AbstractScene {
 		onAction = (event: ActionEvent) => presenter.joinGame
 	}
 
+	private lazy val messageField = new Label
+
 	def ip: String = ipField.text.value
 
-	show {
-		new HBox {
-			alignment = Pos.CENTER
-			spacing = 20
-			content = List(
-				new Label {
-					text = "IP des Spiel-Servers"
-				},
-				ipField,
-				connectButton,
-				new Button {
-					text = "abbrechen"
-					onAction = (event: ActionEvent) => presenter.abort
-				}
-			)
+	def showView = {
+		show {
+			new HBox {
+				alignment = Pos.CENTER
+				spacing = 20
+				content = List(
+					new Label {
+						text = "IP des Spiel-Servers"
+					},
+					ipField,
+					connectButton,
+					new Button {
+						text = "abbrechen"
+						onAction = (event: ActionEvent) => presenter.abort
+					},
+					messageField
+				)
+			}
 		}
+		messageField text = ""
+	}
+
+	def failedToConnect(error: String) {
+		showView
+		messageField text = error
 	}
 }
