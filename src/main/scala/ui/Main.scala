@@ -37,7 +37,7 @@ case class EndEvent extends ClientEvent
 
 case class GoToStart extends NavigationEvent
 
-case class GoToGameCreation(player: Player) extends NavigationEvent
+case class GoToGameCreation(player: Player, local: Boolean) extends NavigationEvent
 
 case class GoToJoinGame(player: Player) extends NavigationEvent
 

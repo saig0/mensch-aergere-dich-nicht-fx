@@ -34,12 +34,15 @@ class GameCreationPresenter extends Presenter[GameCreationView] {
 
 	var player: Player = _
 
-	val startEvent = GoToGameCreation(Player(""))
+	var behavior: GameCreationBehavior = _
+
+	val startEvent = GoToGameCreation(Player(""), false)
 
 	def onStart = {
-		case GoToGameCreation(player) => {
+		case GoToGameCreation(player, local) => {
 			this.player = player
-			updateUi("Erstelle Spiel auf Server", GameServerClient.newGame(4, 0), { (game: Game) =>
+			this.behavior = GameCreationBehavior(local)
+			updateUi("Erstelle Spiel auf Server", behavior.createGame, { (game: Game) =>
 				this.game = Some(game)
 				view.showGame(game)
 
@@ -59,14 +62,14 @@ class GameCreationPresenter extends Presenter[GameCreationView] {
 		case JoinPlayer(player) => {
 			game = game map (g => g.copy(currentPlayers = g.currentPlayers + 1))
 			game map { g =>
-				updateUi(GameServerClient.updateGame(g), { _: Unit =>
+				updateUi(behavior.updateGame(g), { _: Unit =>
 					view.joinPlayer(player)
 				})
 			}
 		}
 		case StartGame(players) => {
 			game map { g =>
-				updateUi("Entferne Spiel vom Server", GameServerClient.deleteGame(g), { _: Unit =>
+				updateUi("Entferne Spiel vom Server", behavior.deleteGame(g), { _: Unit =>
 					Main.publish(GoToGame(players, player))
 				})
 			}
@@ -86,7 +89,7 @@ class GameCreationPresenter extends Presenter[GameCreationView] {
 		if (player != this.player) {
 			client
 			game = game map (g => g.copy(currentPlayers = g.currentPlayers - 1))
-			updateUi(GameServerClient.updateGame(game.get), { _: Unit =>
+			updateUi(behavior.updateGame(game.get), { _: Unit =>
 				view.removePlayer(player)
 			})
 		}
@@ -100,7 +103,7 @@ class GameCreationPresenter extends Presenter[GameCreationView] {
 	}
 
 	def abort {
-		game map (GameServerClient.deleteGame(_))
+		game map (behavior.deleteGame(_))
 		publish(GoToStart())
 	}
 }

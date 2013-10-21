@@ -33,15 +33,27 @@ class StartView(presenter: StartPresenter) extends AbstractScene {
 
 			content = List(
 				new Button {
-					text = "Spiel erstellen"
-					onAction = (event: ActionEvent) => presenter.createGame
+					text = "Online Spiel erstellen"
+					onAction = (event: ActionEvent) => presenter.createHostedGame
 				},
+
 				new Button {
-					text = "Online-Spiel beitreten"
+					text = "Lokales Spiel erstellen"
+					onAction = (event: ActionEvent) => presenter.createLocalGame
+				}
+			)
+		},
+		new HBox {
+			alignment = Pos.CENTER
+			spacing = 20
+
+			content = Seq(
+				new Button {
+					text = "Online Spiel beitreten"
 					onAction = (event: ActionEvent) => presenter.joinGame
 				},
 				new Button {
-					text = "LAN-Spiel beitreten"
+					text = "Lokalem Spiel beitreten"
 					onAction = (event: ActionEvent) => presenter.connectIp
 				}
 			)

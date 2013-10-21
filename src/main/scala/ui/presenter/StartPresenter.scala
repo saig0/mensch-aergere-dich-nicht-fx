@@ -7,6 +7,7 @@ import ui.GoToGameCreation
 import ui.GoToJoinGame
 import ui.GoToConnectIp
 import ui.ClientEvent
+import ui.GoToGameCreation
 
 class StartPresenter extends Presenter[StartView] {
 
@@ -24,8 +25,12 @@ class StartPresenter extends Presenter[StartView] {
 
 	def player = Player(view.playerName)
 
-	def createGame {
-		publish(GoToGameCreation(player))
+	def createHostedGame {
+		publish(GoToGameCreation(player, false))
+	}
+
+	def createLocalGame {
+		publish(GoToGameCreation(player, true))
 	}
 
 	def joinGame {
