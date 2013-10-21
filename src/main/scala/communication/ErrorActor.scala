@@ -7,6 +7,8 @@ import akka.actor.Props
 import akka.actor.ActorRef
 import akka.remote._
 import akka.actor.ActorSystem
+import ui.ServerConnectionError
+import util.Logging
 
 object ErrorActor {
 	def apply(system: ActorSystem) {
@@ -15,9 +17,9 @@ object ErrorActor {
 	}
 }
 
-class ErrorActor extends Actor {
+class ErrorActor extends Actor with Logging {
 	def receive = {
-		case e: RemoteClientError => println(">>>>>>>> " + e)
-		case e => println("-------- " + e)
+		case e: RemoteClientError => Main.publish(ServerConnectionError(e.cause))
+		case e => debug("remote life cycle event: " + e)
 	}
 }

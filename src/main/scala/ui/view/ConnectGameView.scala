@@ -28,28 +28,30 @@ class ConnectGameView(presenter: ConnectGamePresenter) extends AbstractScene {
 
 	def showView = {
 		show {
-			new HBox {
-				alignment = Pos.CENTER
-				spacing = 20
-				content = List(
-					new Label {
-						text = "IP des Spiel-Servers"
-					},
-					ipField,
-					connectButton,
-					new Button {
-						text = "abbrechen"
-						onAction = (event: ActionEvent) => presenter.abort
-					},
-					messageField
-				)
-			}
+			List(
+				new HBox {
+					alignment = Pos.CENTER
+					spacing = 20
+					content = List(
+						new Label {
+							text = "IP des Spiel-Servers"
+						},
+						ipField,
+						connectButton,
+						new Button {
+							text = "abbrechen"
+							onAction = (event: ActionEvent) => presenter.abort
+						}
+					)
+				},
+				messageField
+			)
 		}
 		messageField text = ""
 	}
 
-	def failedToConnect(error: String) {
+	def failedToConnect(cause: String) {
 		showView
-		messageField text = error
+		messageField text = "Es konnte keine Verbindung zum Server " + ip + " hergestellt werden."
 	}
 }

@@ -55,6 +55,8 @@ case class MoveFigure(player: Player, figure: Figure, number: Int) extends Clien
 
 case class GameEnd(winner: Player) extends ClientEvent
 
+case class ServerConnectionError(cause: Throwable) extends ClientEvent
+
 object Main extends JFXApp with Logging {
 
 	val system = ActorSystem.create("EventBus")

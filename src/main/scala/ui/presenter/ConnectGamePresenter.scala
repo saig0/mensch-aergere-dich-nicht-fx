@@ -17,14 +17,17 @@ import ui.JoinPlayer
 import ui.JoinPlayer
 import ui.GoToConnectIp
 import ui.StartGame
+import ui.ServerConnectionError
+import ui.ServerConnectionError
+import akka.actor.Kill
 
 class ConnectGamePresenter extends Presenter[ConnectGameView] {
 
 	lazy val view = new ConnectGameView(this)
 
-	val events = List(JoinPlayer(Player("")), StartGame(Nil))
+	val events = List(JoinPlayer(Player("")), StartGame(Nil), ServerConnectionError(new Throwable))
 
-	var clientServer: ActorRef = _
+	var client: Option[ActorRef] = None
 
 	var player: Player = _
 
@@ -50,18 +53,26 @@ class ConnectGamePresenter extends Presenter[ConnectGameView] {
 				view.showLoading("Verbunden mit " + view.ip + ". Warte auf Spiel Start.")
 			}
 		}
+		case ServerConnectionError(cause) => {
+			updateUi {
+				view.failedToConnect(cause.getMessage())
+			}
+			client map (_ ! Kill)
+		}
 		case _ =>
 	}
 
 	def joinGame {
 		val ip = view.ip
 		updateUi("Verbinde zum Server " + ip, {
-			clientServer = Client.create(player, ip)
-			clientServer ! ClientMessage("Client is up!")
+			val client = Client.create(player, ip)
+			client ! ClientMessage("Client is up!")
+			this.client = Some(client)
 		})
 	}
 
 	def abort {
+		client map (_ ! Kill)
 		publish(GoToStart())
 	}
 }
