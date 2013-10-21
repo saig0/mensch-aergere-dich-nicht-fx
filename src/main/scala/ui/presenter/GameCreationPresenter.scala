@@ -21,6 +21,7 @@ import ui.GoToGame
 import ui.GoToStart
 import ui.GoToGameCreation
 import ui.StartGame
+import akka.actor.Kill
 
 class GameCreationPresenter extends Presenter[GameCreationView] {
 
@@ -104,6 +105,7 @@ class GameCreationPresenter extends Presenter[GameCreationView] {
 
 	def abort {
 		game map (behavior.deleteGame(_))
+		ClientServer.server ! Kill
 		publish(GoToStart())
 	}
 }

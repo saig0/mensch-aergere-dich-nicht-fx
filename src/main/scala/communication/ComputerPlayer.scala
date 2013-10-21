@@ -94,6 +94,10 @@ class ComputerPlayer(server: ActorRef, cpuPlayer: Player) extends Actor with Act
 		}
 	}
 
+	override def postStop {
+		disconnect
+	}
+
 	private def disconnect {
 		ComputerPlayer.cpuPlayer -= 1
 		ClientServer.system.stop(self)

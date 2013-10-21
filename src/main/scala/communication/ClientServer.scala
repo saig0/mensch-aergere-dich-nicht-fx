@@ -11,6 +11,7 @@ import ui.Main
 import ui.JoinPlayer
 import ui.EndEvent
 import game.Figure
+import akka.actor.Kill
 
 trait ServerEvent
 
@@ -100,6 +101,10 @@ class ClientServer extends Actor with ActorLogging {
 				actor ! event(player)
 			}
 		}
+	}
+
+	override def postStop {
+		connectedPlayers map { case (player, actor) => actor ! Kill }
 	}
 
 }
