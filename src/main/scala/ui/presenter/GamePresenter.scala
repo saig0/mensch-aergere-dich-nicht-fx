@@ -33,6 +33,8 @@ class GamePresenter extends Presenter[GameView] {
 
 	lazy val client = Client.client
 
+	var activeTurn = false
+
 	def onStart = {
 		case GoToGame(players, self) => {
 			this.selfPlayer = self
@@ -51,11 +53,17 @@ class GamePresenter extends Presenter[GameView] {
 				view.yourTurn(player)
 				view.dice(number)
 			}
-			if (!game.canMoveFigure(player, number)) {
-				future {
-					Thread.sleep(1000 * (2 + 1)) // warten auf Würfel Animation 
-					game.couldNotMoveFigure(player)
-					nextAction(player, number)
+			future {
+				Thread.sleep(1000 * 2) // warten auf Würfel Animation
+
+				if (game.canMoveFigure(player, number)) {
+					activeTurn = true
+				} else {
+					future {
+						game.couldNotMoveFigure(player)
+						Thread.sleep(1000) // warten  
+						nextAction(player, number)
+					}
 				}
 			}
 		}
@@ -71,6 +79,7 @@ class GamePresenter extends Presenter[GameView] {
 		}
 		case MoveFigure(player, figure, dice) => {
 			game.nextPositions(player, figure, dice) map { movement =>
+				activeTurn = false
 				view.moveFigure(player, figure, movement)
 				future {
 					// warten bis Animation zu ende ist
@@ -112,7 +121,7 @@ class GamePresenter extends Presenter[GameView] {
 	var lastDiceNumber: Option[Int] = None
 
 	def previewFigure(player: Player, figure: Figure) {
-		if (player == selfPlayer) {
+		if (player == selfPlayer && activeTurn) {
 			lastDiceNumber map { dice =>
 				game.nextPositions(player, figure, dice) map (movement =>
 					view.previewPositions(player, movement))
@@ -125,7 +134,7 @@ class GamePresenter extends Presenter[GameView] {
 	}
 
 	def moveFigure(player: Player, figure: Figure) {
-		if (player == selfPlayer) {
+		if (player == selfPlayer && activeTurn) {
 			lastDiceNumber map { dice =>
 				game.nextPositions(player, figure, dice) map (_ =>
 					client ! MoveFigure(player, figure, dice))
