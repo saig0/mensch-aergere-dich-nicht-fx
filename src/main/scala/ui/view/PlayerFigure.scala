@@ -12,6 +12,13 @@ import ui.view.ScalaFxView.actionDsl
 import ui.presenter.GamePresenter
 import scalafx.animation._
 import scalafx.Includes._
+import ui.view.PlayerFigure._
+
+object PlayerFigure {
+	val moveAnimationDuration = 1 s
+
+	val moveAnimationDurationInMillis = moveAnimationDuration.toMillis.toInt
+}
 
 case class PlayerFigure(x: Int, y: Int, color: Color, player: Player, var figure: Figure, presenter: GamePresenter) {
 
@@ -54,7 +61,7 @@ case class PlayerFigure(x: Int, y: Int, color: Color, player: Player, var figure
 			node = view
 			children = movement map { move =>
 				new TranslateTransition {
-					duration = (1 s)
+					duration = moveAnimationDuration
 					toX = move._1 - x
 					toY = move._2 - y
 				}

@@ -12,6 +12,8 @@ import model.Player
 import game._
 import scala.concurrent._
 import ExecutionContext.Implicits.global
+import ui.view.Dice
+import ui.view.PlayerFigure
 
 object ComputerPlayer {
 
@@ -41,7 +43,7 @@ class ComputerPlayer(server: ActorRef, cpuPlayer: Player) extends Actor with Act
 		case NewTurn(player, dice) if (player == cpuPlayer) => {
 			future {
 				// warten bis Würfel fertig ist
-				Thread.sleep(1000 * 2)
+				Thread.sleep(Dice.rollAnimationDurationInMillis)
 
 				if (game.canMoveFigure(player, dice)) {
 					// TODO: intelligentere Auswahl der Figur
@@ -50,7 +52,7 @@ class ComputerPlayer(server: ActorRef, cpuPlayer: Player) extends Actor with Act
 					server ! MoveFigure(player, figure, dice)
 				} else {
 					future {
-						Thread.sleep(1000)
+						Thread.sleep(Dice.waitAfterRollInMillis)
 						game.couldNotMoveFigure(player)
 						nextAction(player, dice)
 					}
@@ -65,7 +67,7 @@ class ComputerPlayer(server: ActorRef, cpuPlayer: Player) extends Actor with Act
 		case MoveFigure(player, figure, dice) => {
 			game.nextPositions(player, figure, dice) map { movement =>
 				// warten bis Animation zu ende ist
-				Thread.sleep(1000 * movement.size)
+				Thread.sleep(PlayerFigure.moveAnimationDurationInMillis * movement.size)
 
 				game.moveFigure(player, figure, movement.last) map {
 					_ match {

@@ -7,6 +7,19 @@ import scalafx.animation._
 import scalafx.Includes._
 import scala.concurrent._
 import ExecutionContext.Implicits.global
+import ui.view.Dice._
+
+object Dice {
+	val rollAnimationDuration = 2.0 s
+
+	val rollAnimationDurationInMillis = rollAnimationDuration.toMillis.toInt
+
+	val durationBetweenNextRollNumberInMillis = 300
+
+	val waitAfterRollInMillis = 2 * 1000
+
+	def random = Math.round(1 + Math.random * 5).toInt
+}
 
 class Dice {
 
@@ -45,15 +58,17 @@ class Dice {
 	private def show(number: Int) =
 		points map (s => s map (_.visible = s.size == number))
 
-	private def showNumber(number: Int) =
-		1 to 6 map (s => future {
-			Thread.sleep(s * 300)
-			if (s < 6) {
-				show((1 + Math.random * 5).toInt)
+	private def showNumber(number: Int) = {
+		val rolls = ((rollAnimationDurationInMillis * 0.75) / durationBetweenNextRollNumberInMillis).toInt
+		1 to rolls map (s => future {
+			Thread.sleep(s * durationBetweenNextRollNumberInMillis)
+			if (s < rolls) {
+				show(random)
 			} else {
 				show(number)
 			}
 		})
+	}
 
 	private def rollAnimation =
 		new ParallelTransition {
@@ -65,13 +80,13 @@ class Dice {
 					duration = (0.5 s)
 				},
 				new TranslateTransition {
-					duration = (2 s)
+					duration = rollAnimationDuration
 					cycleCount = 1
 					fromX = -300
 					toX = 300
 				},
 				new RotateTransition {
-					duration = (2 s)
+					duration = rollAnimationDuration
 					cycleCount = 1
 					byAngle = 180
 				}

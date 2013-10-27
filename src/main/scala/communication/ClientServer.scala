@@ -12,6 +12,7 @@ import ui.JoinPlayer
 import ui.EndEvent
 import game.Figure
 import akka.actor.Kill
+import ui.view.Dice.random
 
 trait ServerEvent
 
@@ -89,7 +90,7 @@ class ClientServer extends Actor with ActorLogging {
 	}
 
 	private def newTurn(player: Player) {
-		val number = Math.round(1 + Math.random * 5).toInt
+		val number = random
 		val turn = NewTurn(player, number)
 		sendAll { _ => turn }
 	}

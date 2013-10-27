@@ -18,6 +18,8 @@ import communication.TurnCompleted
 import ui.GameEnd
 import communication.ContinueTurn
 import communication.TurnCompleted
+import ui.view.PlayerFigure
+import ui.view.Dice
 
 class GamePresenter extends Presenter[GameView] {
 
@@ -54,14 +56,14 @@ class GamePresenter extends Presenter[GameView] {
 				view.dice(number)
 			}
 			future {
-				Thread.sleep(1000 * 2) // warten auf Würfel Animation
+				Thread.sleep(Dice.rollAnimationDurationInMillis) // warten auf Würfel Animation
 
 				if (game.canMoveFigure(player, number)) {
 					activeTurn = true
 				} else {
 					future {
 						game.couldNotMoveFigure(player)
-						Thread.sleep(1000) // warten  
+						Thread.sleep(Dice.waitAfterRollInMillis) // warten  
 						nextAction(player, number)
 					}
 				}
@@ -83,7 +85,7 @@ class GamePresenter extends Presenter[GameView] {
 				view.moveFigure(player, figure, movement)
 				future {
 					// warten bis Animation zu ende ist
-					Thread.sleep(1000 * movement.size)
+					Thread.sleep(PlayerFigure.moveAnimationDurationInMillis * movement.size)
 
 					game.moveFigure(player, figure, movement.last) map {
 						_ match {
