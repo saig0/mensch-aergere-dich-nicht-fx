@@ -95,12 +95,12 @@ class GamePresenter extends Presenter[GameView] {
 								game.moveFigure(beatenPlayer, figure, startPosition)
 								nextAction(player, dice)
 							}
-							case Win(player) => {
-								if (player == selfPlayer) {
-									view.youWin(selfPlayer)
+							case Win(winPlayer) => {
+								if (winPlayer == selfPlayer) {
+									updateUi(view.youWin(selfPlayer))
 									client ! GameEnd(selfPlayer)
 								} else {
-									view.playerWin(player)
+									updateUi(view.playerWin(winPlayer))
 								}
 							}
 						}

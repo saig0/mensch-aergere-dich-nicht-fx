@@ -76,7 +76,7 @@ class ComputerPlayer(server: ActorRef, cpuPlayer: Player) extends Actor with Act
 							game.moveFigure(beatenPlayer, figure, startPosition)
 							nextAction(player, dice)
 						}
-						case Win(player) if (player == cpuPlayer) => {
+						case Win(winPlayer) if (winPlayer == cpuPlayer) => {
 							server ! GameEnd(cpuPlayer)
 						}
 						case _ =>
@@ -85,7 +85,7 @@ class ComputerPlayer(server: ActorRef, cpuPlayer: Player) extends Actor with Act
 			}
 		}
 		case GameEnd(_) => disconnect
-		case x => println("receive on cpu " + x)
+		case _ =>
 	}
 
 	private def nextAction(player: Player, dice: Int) {

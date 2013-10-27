@@ -81,7 +81,7 @@ class ClientServer extends Actor with ActorLogging {
 			ClientServer.system.stop(self)
 			ClientServer.system.shutdown
 		}
-		case x => println("receive on server " + x)
+		case _ =>
 	}
 
 	private def nextPlayer(player: Player) = {

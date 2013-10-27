@@ -55,7 +55,7 @@ case class Game(players: List[Player]) {
 	private def winGame(player: Player): Option[Action] =
 		gameStates(player).figures.filter(_.position.isInstanceOf[Home]) match {
 			case figuresInHome if (figuresInHome.size == 4) => Some(Win(player))
-			case _ => None
+			case _ => Some(Win(player))
 		}
 
 	private def beatFigure(player: Player, newPosition: Position): Option[Action] =

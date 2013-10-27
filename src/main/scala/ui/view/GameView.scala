@@ -96,10 +96,10 @@ class GameView(presenter: GamePresenter) extends AbstractScene {
 	}
 
 	def youWin(player: Player) {
-		activePlayer text = "Du hast gewonnen " + player.name + "!"
+		activePlayer.text = "Du hast gewonnen " + player.name + "!"
 	}
 
 	def playerWin(player: Player) {
-		activePlayer text = "Spieler " + player.name + " hat das Spiel gewonnen!"
+		activePlayer.text = "Spieler " + player.name + " hat das Spiel gewonnen!"
 	}
 }
