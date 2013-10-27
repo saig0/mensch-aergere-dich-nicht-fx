@@ -79,6 +79,7 @@ class ComputerPlayer(server: ActorRef, cpuPlayer: Player) extends Actor with Act
 						case Win(player) if (player == cpuPlayer) => {
 							server ! GameEnd(cpuPlayer)
 						}
+						case _ =>
 					}
 				} getOrElse nextAction(player, dice)
 			}
