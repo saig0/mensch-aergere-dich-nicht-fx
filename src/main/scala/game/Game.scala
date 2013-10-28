@@ -55,7 +55,7 @@ case class Game(players: List[Player]) {
 	private def winGame(player: Player): Option[Action] =
 		gameStates(player).figures.filter(_.position.isInstanceOf[Home]) match {
 			case figuresInHome if (figuresInHome.size == 4) => Some(Win(player))
-			case _ => Some(Win(player))
+			case _ => None
 		}
 
 	private def beatFigure(player: Player, newPosition: Position): Option[Action] =
@@ -72,15 +72,22 @@ case class Game(players: List[Player]) {
 	def nextAction(player: Player, dice: Int): Action = {
 		if (dice == 6) {
 			RollDiceAgain(player)
-		} else if (allFiguresOnStart(player) && tries(player, history) < 3) {
+		} else if (allFiguresOnStartOrHome(player) && tries(player, history) < 3) {
 			RollDiceAgain(player)
 		} else {
 			EndTurn()
 		}
 	}
 
-	private def allFiguresOnStart(player: Player): Boolean =
-		gameStates(player).figures.filter(_.position.isInstanceOf[Start]).size == 4
+	private def allFiguresOnStartOrHome(player: Player): Boolean = {
+		val figures = gameStates(player).figures
+		val figuresOnStart = figures.filter(_.position.isInstanceOf[Start]).size
+		if (figuresOnStart == 4) {
+			true
+		} else {
+			(true /: (1 to (4 - figuresOnStart) map (f => figures.exists(_.position == Home(5 - f)))))(_ && _)
+		}
+	}
 
 	private def tries(player: Player, history: List[(Player, Option[(Figure, Position)])]): Int =
 		history match {

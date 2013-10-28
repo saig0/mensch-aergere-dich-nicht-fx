@@ -217,4 +217,35 @@ class GameTest extends FlatSpec with Matchers {
 		game.couldNotMoveFigure(player1)
 		game.nextAction(player1, 1) should be(RollDiceAgain(player1))
 	}
+
+	it should "roll dice again while trying to move figure from start with one figure on home end" in {
+		val game = new Game(players)
+		val player = players(0)
+		val figures = game.gameStates(player).figures
+
+		game.moveFigure(player, figures(0), Home(4))
+		game.couldNotMoveFigure(player)
+		game.nextAction(player, 1) should be(RollDiceAgain(player))
+	}
+
+	it should "roll dice again while trying to move figure from start with two figures on home end" in {
+		val game = new Game(players)
+		val player = players(0)
+		val figures = game.gameStates(player).figures
+
+		game.moveFigure(player, figures(0), Home(4))
+		game.moveFigure(player, figures(1), Home(3))
+		game.couldNotMoveFigure(player)
+		game.nextAction(player, 1) should be(RollDiceAgain(player))
+	}
+
+	it should "not roll dice again while trying to move figure from start with one figure on home but not on end" in {
+		val game = new Game(players)
+		val player = players(0)
+		val figures = game.gameStates(player).figures
+
+		game.moveFigure(player, figures(0), Home(3))
+		game.couldNotMoveFigure(player)
+		game.nextAction(player, 1) should be(EndTurn())
+	}
 }
