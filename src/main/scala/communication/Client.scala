@@ -13,6 +13,7 @@ import game.Figure
 import akka.actor.Terminated
 import java.nio.channels.ClosedChannelException
 import akka.remote.RemoteClientError
+import java.net.InetAddress
 
 case class ClientMessage(x: Any)
 
@@ -20,7 +21,9 @@ object Client {
 
 	lazy val system = ActorSystem("Client", ConfigFactory.load.getConfig("client"))
 
-	def create(player: Player, remoteServerIp: String = "127.0.0.1"): ActorRef = {
+	lazy val localIp = InetAddress.getLocalHost.getHostAddress
+
+	def create(player: Player, remoteServerIp: String = localIp): ActorRef = {
 		val server = system.actorFor(
 			"akka://ClientServer@" + remoteServerIp + ":2553/user/clientServer")
 

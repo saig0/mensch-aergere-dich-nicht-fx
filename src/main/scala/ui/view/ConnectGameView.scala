@@ -26,6 +26,8 @@ class ConnectGameView(presenter: ConnectGamePresenter) extends AbstractScene {
 
 	def ip: String = ipField.text.value
 
+	def ip_=(ip: String) = ipField.text = ip
+
 	def showView = {
 		show {
 			List(

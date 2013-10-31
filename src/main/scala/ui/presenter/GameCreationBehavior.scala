@@ -4,6 +4,7 @@ import scala.concurrent._
 import ExecutionContext.Implicits.global
 import model.Game
 import rest.GameServerClient
+import communication.Client
 
 trait GameCreationBehavior {
 	def createGame: Future[Game]
@@ -31,7 +32,7 @@ class HostedGameCreationBehavior extends GameCreationBehavior {
 }
 
 class LocalGameCreationBehavior extends GameCreationBehavior {
-	def createGame = future(Game(0, "127.0.0.1", 4, 0))
+	def createGame = future(Game(0, Client.localIp, 4, 0))
 
 	def updateGame(updatedGame: Game) = future(Unit)
 
