@@ -15,7 +15,20 @@ class GameEvaluationTest extends FlatSpec with Matchers {
 	def newGame = new Game(players)
 
 	def fieldBeforeHome(game: Game, player: Player, fields: Int) =
-		Field(game.startPosition(player) - fields + 1)
+		Field((game.startPosition(player) - fields) % Game.gameFieldCount)
+
+	"A game evaluation" should "not change the game state" in {
+		val game = newGame
+		val player = players(0)
+		val figures = game.gameStates(player).figures
+
+		game.moveFigure(players(0), figures(0), Field(3))
+		val figuresOfPlayer1 = game.gameStates(player).figures map (_.copy())
+
+		GameEvaluation.getBestMove(game, player, 3)
+
+		game.gameStates(player).figures should be(figuresOfPlayer1)
+	}
 
 	"The best move" should "move figure to home" in {
 		val game = newGame
@@ -26,7 +39,7 @@ class GameEvaluationTest extends FlatSpec with Matchers {
 		val figuresOfPlayer2 = game.gameStates(player2).figures
 
 		game.moveFigure(player1, figuresOfPlayer1(0), fieldBeforeHome(game, player1, 10))
-		game.moveFigure(player1, figuresOfPlayer1(1), fieldBeforeHome(game, player1, dice))
+		game.moveFigure(player1, figuresOfPlayer1(1), fieldBeforeHome(game, player1, dice - 1))
 		game.moveFigure(player2, figuresOfPlayer2(0), fieldBeforeHome(game, player1, 10))
 
 		GameEvaluation.getBestMove(game, player1, dice) should be(figuresOfPlayer1(1))
@@ -40,9 +53,9 @@ class GameEvaluationTest extends FlatSpec with Matchers {
 		val player2 = players(1)
 		val figuresOfPlayer2 = game.gameStates(player2).figures
 
-		game.moveFigure(player1, figuresOfPlayer1(0), fieldBeforeHome(game, player1, dice - 1))
-		game.moveFigure(player1, figuresOfPlayer1(1), fieldBeforeHome(game, player1, 10))
-		game.moveFigure(player2, figuresOfPlayer2(0), fieldBeforeHome(game, player1, 10))
+		game.moveFigure(player1, figuresOfPlayer1(0), fieldBeforeHome(game, player1, dice))
+		game.moveFigure(player1, figuresOfPlayer1(1), fieldBeforeHome(game, player1, 7 + dice))
+		game.moveFigure(player2, figuresOfPlayer2(0), fieldBeforeHome(game, player1, 7))
 
 		GameEvaluation.getBestMove(game, player1, dice) should be(figuresOfPlayer1(1))
 	}
@@ -54,7 +67,7 @@ class GameEvaluationTest extends FlatSpec with Matchers {
 		val figures = game.gameStates(player).figures
 
 		game.moveFigure(player, figures(0), fieldBeforeHome(game, player, 10))
-		game.moveFigure(player, figures(1), fieldBeforeHome(game, player, 0))
+		game.moveFigure(player, figures(1), Field(1))
 
 		GameEvaluation.getBestMove(game, player, dice) should be(figures(1))
 	}
