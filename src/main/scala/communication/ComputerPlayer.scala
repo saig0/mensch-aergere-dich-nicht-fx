@@ -46,9 +46,7 @@ class ComputerPlayer(server: ActorRef, cpuPlayer: Player) extends Actor with Act
 				Thread.sleep(Dice.rollAnimationDurationInMillis)
 
 				if (game.canMoveFigure(player, dice)) {
-					// TODO: intelligentere Auswahl der Figur
-					val possibleMovements = game.gameStates(player).figures map (figure => game.nextPositions(player, figure, dice) map (movement => figure -> movement)) flatten
-					val figure = possibleMovements.head._1
+					val figure = GameEvaluation.getBestMove(game, player, dice)
 					server ! MoveFigure(player, figure, dice)
 				} else {
 					future {

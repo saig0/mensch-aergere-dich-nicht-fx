@@ -11,7 +11,7 @@ import Game._
 case class Game(players: List[Player]) {
 	val gameStates = players map (player => player -> GameState()) toMap
 
-	private def startPositions(player: Player) = {
+	def startPosition(player: Player) = {
 		(players indexOf player) match {
 			case 0 => gameFieldCount
 			case i => i * 10
@@ -31,12 +31,12 @@ case class Game(players: List[Player]) {
 
 	private def nextPosition(player: Player, figure: Figure, dice: Int): Option[Position] = {
 		figure.position match {
-			case Start(_) if (dice == 6) => Some(Field(startPositions(player) % gameFieldCount + 1))
-			case Field(pos) if (pos > startPositions(player) || pos + dice <= startPositions(player)) => {
+			case Start(_) if (dice == 6) => Some(Field(startPosition(player) % gameFieldCount + 1))
+			case Field(pos) if (pos > startPosition(player) || pos + dice <= startPosition(player)) => {
 				if (pos + dice == gameFieldCount) Some(Field(gameFieldCount))
 				else Some(Field((pos + dice) % gameFieldCount))
 			}
-			case Field(pos) if (pos + dice - startPositions(player) <= 4) => Some(Home(pos + dice - startPositions(player)))
+			case Field(pos) if (pos + dice - startPosition(player) <= 4) => Some(Home(pos + dice - startPosition(player)))
 			case Home(pos) if (pos + dice <= 4) => Some(Home(pos + dice))
 			case _ => None // außerhalb vom Spielbrett oder keine 6 beim Start
 		}
