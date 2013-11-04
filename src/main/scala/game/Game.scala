@@ -2,11 +2,12 @@ package game
 
 import model.Player
 
+import Game._
+import scala.annotation.tailrec
+
 object Game {
 	val gameFieldCount = 40
 }
-
-import Game._
 
 case class Game(players: List[Player]) {
 	val gameStates = players map (player => player -> GameState()) toMap
@@ -72,8 +73,13 @@ case class Game(players: List[Player]) {
 	def nextAction(player: Player, dice: Int): Action = {
 		if (dice == 6) {
 			RollDiceAgain(player)
-		} else if (allFiguresOnStartOrHome(player) && tries(player, history) < 3) {
-			RollDiceAgain(player)
+		} else if (allFiguresOnStartOrHome(player)) {
+			val triesOfPlayer = tries(player, history)
+			if (triesOfPlayer > 0 && triesOfPlayer < 3) {
+				RollDiceAgain(player)
+			} else {
+				EndTurn()
+			}
 		} else {
 			EndTurn()
 		}
