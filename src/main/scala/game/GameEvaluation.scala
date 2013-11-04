@@ -3,11 +3,6 @@ package game
 import model.Player
 
 object GameEvaluation {
-	def getBestMove(game: Game, player: Player, dice: Int): Figure = {
-		val possibleMovements = game.gameStates(player).figures map (figure => game.nextPositions(player, figure, dice) map (movement => figure -> movement.last)) flatten
-		val (figure, rating) = possibleMovements map { case (figure, movement) => figure -> evaluateMovement(game, player, figure, movement, dice) } maxBy (_._2)
-		figure
-	}
 
 	private val evaluationWin = 90
 	private val evaluationHomeField = 80
@@ -15,11 +10,25 @@ object GameEvaluation {
 	private val evaluationMoveFigureFromStart = 60
 	private val evaluationMoveFigureIntoGame = 50
 
-	private def startPosition(game: Game, player: Player) =
-		(game.startPosition(player) % Game.gameFieldCount) + 1
+	def getBestMove(game: Game, player: Player, dice: Int): Figure = {
+		val possibleMovements = game.gameStates(player).figures map (figure => game.nextPositions(player, figure, dice) map (movement => figure -> movement.last)) flatten
+		val (figure, rating) = possibleMovements map { case (figure, movement) => figure -> evaluateMovement(copyGame(game), player, figure, movement, dice) } maxBy (_._2)
+		figure
+	}
+
+	private def copyGame(game: Game): Game = {
+		val newGame = game.copy()
+		game.gameStates map {
+			case (player, gameState) => 0 to 3 map { i =>
+				val figure = newGame.gameStates(player).figures(i)
+				val pos = gameState.figures(i).position
+				newGame.moveFigure(player, figure, pos)
+			}
+		}
+		newGame
+	}
 
 	private def evaluateMovement(game: Game, player: Player, figure: Figure, movement: Position, dice: Int): Int = {
-		// val game = g.copy()
 		game.moveFigure(player, figure, movement) map {
 			_ match {
 				case Win(_) => evaluationWin
@@ -34,4 +43,8 @@ object GameEvaluation {
 			}
 		}
 	}
+
+	private def startPosition(game: Game, player: Player) =
+		(game.startPosition(player) % Game.gameFieldCount) + 1
+
 }
